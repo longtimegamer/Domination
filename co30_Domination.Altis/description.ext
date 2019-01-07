@@ -728,8 +728,29 @@ class Params {
     		title = "$STR_DOM_MISSIONSTRING_1885";
     		values[] = {0,1};
     		default = 0;
-    		texts[] = {"$STR_DOM_MISSIONSTRING_1886","$STR_DOM_MISSIONSTRING_1887"};
+    		texts[] = {"$STR_DOM_MISSIONSTRING_1007","$STR_DOM_MISSIONSTRING_1006"};
     };
+	
+	class d_enable_civs {
+			title = "$STR_DOM_MISSIONSTRING_1890";
+			values[] = {0,1};
+			default = 0;
+			texts[] = {"$STR_DOM_MISSIONSTRING_1007","$STR_DOM_MISSIONSTRING_1006"};
+	};
+	
+	class d_civ_unitcount {
+			title = "$STR_DOM_MISSIONSTRING_1893";
+			values[] = {0,1,2,3,4,5,10,15,20,25,30};
+			default = 0;
+			texts[] = {"0","1","2","3","4","5","10","15","20","25","30"};
+	};
+	
+	class d_sub_kill_civ_points {
+			title = "$STR_DOM_MISSIONSTRING_1888";
+			values[] = {0,1,2,3,4,5,10,25,100};
+			default = 0;
+			texts[] = {"0","1","2","3","4","5","10","25","100"};
+	};
 
 #ifndef __TT__
 	class d_params_dl_9 {
