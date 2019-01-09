@@ -9117,6 +9117,15 @@
 <Original>Civilian unit count per target</Original>
 <Russian>Civilian unit count per target</Russian>
 </Key>
+<Key ID="STR_DOM_MISSIONSTRING_1894">
+<English>Disable enemy air</English>
+<Spanish>Disable enemy air</Spanish>
+<Portuguese>Disable enemy air</Portuguese>
+<Korean>Disable enemy air</Korean>
+<Japanese>Disable enemy air</Japanese>
+<Original>Disable enemy air</Original>
+<Russian>Disable enemy air</Russian>
+</Key>
 </Container>
 </Package>
 </Project>
