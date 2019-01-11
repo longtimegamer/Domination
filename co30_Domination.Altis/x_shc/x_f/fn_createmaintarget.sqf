@@ -246,7 +246,7 @@ if (d_enable_civs == 1) then {
 				];
 	
 				//subtract penalty for killing a civilian
-				[_cKiller, d_sub_kill_civ_points * -1] remoteExecCall ["addScore", 2];
+				[player, d_sub_kill_civ_points * -1] remoteExecCall ["addScore", 2]
 			};
 		}];
 	}];
