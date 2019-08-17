@@ -844,6 +844,27 @@ class Params {
 		default = 8;
 		texts[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "15", "20", "25", "30", "45", "60"};
 	};
+	
+	class d_enemy_garrison_troop_sniper_awareness {
+		title = "$STR_DOM_MISSIONSTRING_1900D";
+		values[] = {0,1};
+		default = 0;
+		texts[] = {"$STR_DOM_MISSIONSTRING_1007","$STR_DOM_MISSIONSTRING_922"};
+	};
+	
+	class d_enemy_garrison_troop_sniper_general_skill {
+		title = "$STR_DOM_MISSIONSTRING_1900E";
+		values[] = {-1, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+		default = -1;
+		texts[] = {"default", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
+	};
+	
+	class d_enemy_garrison_troop_sniper_aimingShake_skill {
+		title = "$STR_DOM_MISSIONSTRING_1900F";
+		values[] = {-1, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+		default = -1;
+		texts[] = {"default", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
+	};
 
 	class d_enemy_max_barracks_count {
 		title = "$STR_DOM_MISSIONSTRING_1899";

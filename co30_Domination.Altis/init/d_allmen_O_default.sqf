@@ -4,6 +4,7 @@
 ["East","OPF_F","Infantry","OIA_InfTeam_AT"] call d_fnc_GetConfigGroup,
 ["East","OPF_F","Infantry","OI_reconPatrol"] call d_fnc_GetConfigGroup,
 ["East","OPF_F","Infantry","OI_reconTeam"] call d_fnc_GetConfigGroup,
+["East","OPF_F","Infantry","OI_SniperTeam"] call d_fnc_GetConfigGroup,
 ["East","OPF_F","UInfantry","OIA_GuardSquad"] call d_fnc_GetConfigGroup,
 ["East","OPF_F","UInfantry","OIA_GuardTeam"] call d_fnc_GetConfigGroup,
 ["East","OPF_F","Infantry","OIA_InfTeam_AA"] call d_fnc_GetConfigGroup

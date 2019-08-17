@@ -205,11 +205,10 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
 
 								//_unitMovementMode == 0 -> no special behavior
 
-								//_unitMovementMode == 1 -> ambush mode - firedNear to restore unit ability to move and fire
+								//_unitMovementMode == 1 -> ambush mode - firedNear within 69m to restore unit ability to move and fire
                                 if (_unitMovementMode == 1) then {
                                     (_units select _unitIndex) setVariable ["zen_fn_idx2", (_units select _unitIndex) addEventHandler ["FiredNear", {
                                         scriptName "spawn_zoh_firednear1ambush";
-                                        //[_this select 0, ["DOWN","MIDDLE"]] spawn d_fnc_Zen_JBOY_UpDown;
                                         (_this select 0) enableAI "TARGET";
                                         (_this select 0) enableAI "AUTOTARGET";
                                         (_this select 0) enableAI "MOVE";
@@ -217,21 +216,39 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
                                     }]];
                                 };
 								
-								//_unitMovementMode == 2 -> static mode - add up/down event handler
+								//_unitMovementMode == 2 -> static mode
 								if (_unitMovementMode == 2) then {
-                                	if (_isRoof) then {
-										(_units select _unitIndex) setUnitPos "MIDDLE";
-										(_units select _unitIndex) setVariable ["zen_fn_idx", (_units select _unitIndex) addEventHandler ["FiredNear", {
-											scriptName "spawn_zoh_firednear1";
-											[_this select 0, ["DOWN","MIDDLE"]] spawn d_fnc_Zen_JBOY_UpDown;
-										}]];
+									
+									//if defined, apply general skill modifier
+									if (d_enemy_garrison_troop_sniper_general_skill > 0) then {
+                                    	(_units select _unitIndex) setSkill d_enemy_garrison_troop_sniper_general_skill;
+                                    };
+                                    
+                                    //if defined, apply aimingShake skill modifier
+                                    if (d_enemy_garrison_troop_sniper_aimingShake_skill > 0) then {
+                                    	(_units select _unitIndex) setSkill ["aimingShake", d_enemy_garrison_troop_sniper_aimingShake_skill];
+                                    };
+								
+									if (d_enemy_garrison_troop_sniper_awareness == 1) then {
+										//highly aware snipers
+										[(_units select _unitIndex), d_side_player] spawn d_fnc_hallyg_dlegion_Snipe;
 									} else {
-										(_units select _unitIndex) setUnitPos "UP";
-										(_units select _unitIndex) setVariable ["zen_fn_idx",(_units select _unitIndex) addEventHandler ["FiredNear", {
-											scriptName "spawn_zoh_firednear2";
-											[_this select 0, ["UP","MIDDLE"]] spawn d_fnc_Zen_JBOY_UpDown;
-										}]];
-									};
+										//common snipers with up/down script triggered by firedNear within 69m
+										if (_isRoof) then {
+											(_units select _unitIndex) setUnitPos "MIDDLE";
+											(_units select _unitIndex) setVariable ["zen_fn_idx", (_units select _unitIndex) addEventHandler ["FiredNear", {
+												scriptName "spawn_zoh_firednear1";
+												[_this select 0, ["DOWN","MIDDLE"]] spawn d_fnc_Zen_JBOY_UpDown;
+											}]];
+										} else {
+											(_units select _unitIndex) setUnitPos "UP";
+											(_units select _unitIndex) setVariable ["zen_fn_idx",(_units select _unitIndex) addEventHandler ["FiredNear", {
+												scriptName "spawn_zoh_firednear2";
+												[_this select 0, ["UP","MIDDLE"]] spawn d_fnc_Zen_JBOY_UpDown;
+											}]];
+										};
+										
+									};									
                                 };
 
                                 I(_unitIndex)

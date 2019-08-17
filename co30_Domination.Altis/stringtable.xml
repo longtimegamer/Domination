@@ -9974,34 +9974,64 @@
 <Chinesesimp>敌人步兵营的最大数量</Chinesesimp>
 </Key>
 <Key ID="STR_DOM_MISSIONSTRING_1900A">
-<English>Garrisoned infantry group count - occupy mode</English>
-<Spanish>Garrisoned infantry group count - occupy mode</Spanish>
-<Portuguese>Garrisoned infantry group count - occupy mode</Portuguese>
-<Korean>Garrisoned infantry group count - occupy mode</Korean>
-<Japanese>Garrisoned infantry group count - occupy mode</Japanese>
-<Original>Garrisoned infantry group count - occupy mode</Original>
-<Russian>Garrisoned infantry group count - occupy mode</Russian>
-<Chinesesimp>Garrisoned infantry group count - occupy mode</Chinesesimp>
+<English>Garrisoned infantry occupy mode - group count</English>
+<Spanish>Garrisoned infantry occupy mode - group count</Spanish>
+<Portuguese>Garrisoned infantry occupy mode - group count</Portuguese>
+<Korean>Garrisoned infantry occupy mode - group count</Korean>
+<Japanese>Garrisoned infantry occupy mode - group count</Japanese>
+<Original>Garrisoned infantry occupy mode - group count</Original>
+<Russian>Garrisoned infantry occupy mode - group count</Russian>
+<Chinesesimp>Garrisoned infantry occupy mode - group count</Chinesesimp>
 </Key>
 <Key ID="STR_DOM_MISSIONSTRING_1900B">
-<English>Garrisoned infantry group count - ambush mode</English>
-<Spanish>Garrisoned infantry group count - ambush mode</Spanish>
-<Portuguese>Garrisoned infantry group count - ambush mode</Portuguese>
-<Korean>Garrisoned infantry group count - ambush mode</Korean>
-<Japanese>Garrisoned infantry group count - ambush mode</Japanese>
-<Original>Garrisoned infantry group count - ambush mode</Original>
-<Russian>Garrisoned infantry group count - ambush mode</Russian>
-<Chinesesimp>Garrisoned infantry group count - ambush mode</Chinesesimp>
+<English>Garrisoned infantry ambush mode - group count</English>
+<Spanish>Garrisoned infantry ambush mode - group count</Spanish>
+<Portuguese>Garrisoned infantry ambush mode - group count</Portuguese>
+<Korean>Garrisoned infantry ambush mode - group count</Korean>
+<Japanese>Garrisoned infantry ambush mode - group count</Japanese>
+<Original>Garrisoned infantry ambush mode - group count</Original>
+<Russian>Garrisoned infantry ambush mode - group count</Russian>
+<Chinesesimp>Garrisoned infantry ambush mode - group count</Chinesesimp>
 </Key>
 <Key ID="STR_DOM_MISSIONSTRING_1900C">
-<English>Garrisoned infantry group count - sniper mode</English>
-<Spanish>Garrisoned infantry group count - sniper mode</Spanish>
-<Portuguese>Garrisoned infantry group count - sniper mode</Portuguese>
-<Korean>Garrisoned infantry group count - sniper mode</Korean>
-<Japanese>Garrisoned infantry group count - sniper mode</Japanese>
-<Original>Garrisoned infantry group count - sniper mode</Original>
-<Russian>Garrisoned infantry group count - sniper mode</Russian>
-<Chinesesimp>Garrisoned infantry group count - sniper mode</Chinesesimp>
+<English>Garrisoned infantry sniper mode - group count</English>
+<Spanish>Garrisoned infantry sniper mode - group count</Spanish>
+<Portuguese>Garrisoned infantry sniper mode - group count</Portuguese>
+<Korean>Garrisoned infantry sniper mode - group count</Korean>
+<Japanese>Garrisoned infantry sniper mode - group count</Japanese>
+<Original>Garrisoned infantry sniper mode - group count</Original>
+<Russian>Garrisoned infantry sniper mode - group count</Russian>
+<Chinesesimp>Garrisoned infantry sniper mode - group count</Chinesesimp>
+</Key>
+<Key ID="STR_DOM_MISSIONSTRING_1900D">
+<English>Garrisoned infantry sniper mode - advanced awareness</English>
+<Spanish>Garrisoned infantry sniper mode - advanced awareness</Spanish>
+<Portuguese>Garrisoned infantry sniper mode - advanced awareness</Portuguese>
+<Korean>Garrisoned infantry sniper mode - advanced awareness</Korean>
+<Japanese>Garrisoned infantry sniper mode - advanced awareness</Japanese>
+<Original>Garrisoned infantry sniper mode - advanced awareness</Original>
+<Russian>Garrisoned infantry sniper mode - advanced awareness</Russian>
+<Chinesesimp>Garrisoned infantry sniper mode - advanced awareness</Chinesesimp>
+</Key>
+<Key ID="STR_DOM_MISSIONSTRING_1900E">
+<English>Garrisoned infantry sniper mode - general skill</English>
+<Spanish>Garrisoned infantry sniper mode - general skill</Spanish>
+<Portuguese>Garrisoned infantry sniper mode - general skill</Portuguese>
+<Korean>Garrisoned infantry sniper mode - general skill</Korean>
+<Japanese>Garrisoned infantry sniper mode - general skill</Japanese>
+<Original>Garrisoned infantry sniper mode - general skill</Original>
+<Russian>Garrisoned infantry sniper mode - general skill</Russian>
+<Chinesesimp>Garrisoned infantry sniper mode - general skill</Chinesesimp>
+</Key>
+<Key ID="STR_DOM_MISSIONSTRING_1900F">
+<English>Garrisoned infantry sniper mode - aimingShake skill</English>
+<Spanish>Garrisoned infantry sniper mode - aimingShake skill</Spanish>
+<Portuguese>Garrisoned infantry sniper mode - aimingShake skill</Portuguese>
+<Korean>Garrisoned infantry sniper mode - aimingShake skill</Korean>
+<Japanese>Garrisoned infantry sniper mode - aimingShake skill</Japanese>
+<Original>Garrisoned infantry sniper mode - aimingShake skill</Original>
+<Russian>Garrisoned infantry sniper mode - aimingShake skill</Russian>
+<Chinesesimp>Garrisoned infantry sniper mode - aimingShake skill</Chinesesimp>
 </Key>
 <Key ID="STR_DOM_MISSIONSTRING_1920">
 <English>Civilian group count per target</English>

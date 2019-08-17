@@ -295,6 +295,8 @@ class cfgFunctions {
 			addc(HousePatrol);
 			addc(Zen_OccupyHouse);
 			addc(Zen_JBOY_UpDown);
+			addc(hallyg_dlegion_Snipe);
+			//addc(Dlos_Snipe);
 			addc(ambientradiochatter);
 		};
 		class Dom_KBTell {

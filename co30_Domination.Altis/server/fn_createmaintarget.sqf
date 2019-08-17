@@ -14,7 +14,15 @@ private _garrisonUnits = {
 	_unitMovementMode = _this select 7;
 
 	__TRACE("from createmaintarget garrison function")
-	private _unitlist = ["specops", d_enemy_side_short] call d_fnc_getunitlistm;
+	
+	private ["_unitlist"];
+	if (_unitMovementMode == 2) then { 
+		_unitlist = ["sniper", d_enemy_side_short] call d_fnc_getunitlistm;
+	} else {
+		_unitlist = ["specops", d_enemy_side_short] call d_fnc_getunitlistm;
+	};
+	hint str _unitlist;
+	
 	if (count _unitlist > _numUnits) then {
 		while {count _unitlist > _numUnits} do {
 			_unitlist deleteAt (ceil (random (count _unitlist - 1)));
@@ -394,7 +402,7 @@ if (d_enemy_occupy_bldgs == 1) then {
 	//START create garrisoned groups of snipers
 	//prepare to create garrisoned groups of snipers - find and sort tallest buildings
 	_buildingsArray = [];
-	_buildingRadius = 250;
+	_buildingRadius = 425;
     _buildingsArray0 = nearestObjects [_trg_center, ["house"], _buildingRadius];
     _buildingsArray1 = nearestObjects [_trg_center, ["building"], _buildingRadius];
     _buildingsArrayRaw = _buildingsArray0 arrayIntersect _buildingsArray1;
@@ -424,7 +432,8 @@ if (d_enemy_occupy_bldgs == 1) then {
 			_bldgIdx = _xx;
 			_numBldgPositions = count ((_buildingsArray select _bldgIdx) buildingPos -1);
 			//create the group but do not exceed the total number of positions in the building
-			_numUnits = ((ceil random 4) max 2) min _numBldgPositions;
+			//_numUnits = ((ceil random 4) max 2) min _numBldgPositions;
+			_numUnits = 2;
 
 			[
 				getPos (_buildingsArray select _bldgIdx),
