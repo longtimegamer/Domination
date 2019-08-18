@@ -4,24 +4,17 @@
 #include "..\x_setup.sqf"
 
 private _garrisonUnits = {
-    _centerPos = _this select 0;
-	_numUnits = _this select 1;
-	_fillRadius = _this select 2;
-	_fillRoof = _this select 3;
-	_fillEvenly = _this select 4;
-	_fillTopDown = _this select 5;
-	_disableTeleport = _this select 6;
-	_unitMovementMode = _this select 7;
+	params ["_centerPos", "_numUnits", "_fillRadius", "_fillRoof", "_fillEvenly", "_fillTopDown", "_disableTeleport", "_unitMovementMode"];
 
 	__TRACE("from createmaintarget garrison function")
 	
 	private ["_unitlist"];
+	
 	if (_unitMovementMode == 2) then { 
 		_unitlist = ["sniper", d_enemy_side_short] call d_fnc_getunitlistm;
 	} else {
 		_unitlist = ["specops", d_enemy_side_short] call d_fnc_getunitlistm;
 	};
-	hint str _unitlist;
 	
 	if (count _unitlist > _numUnits) then {
 		while {count _unitlist > _numUnits} do {
@@ -430,10 +423,12 @@ if (d_enemy_occupy_bldgs == 1) then {
 	if (d_enemy_garrison_troop_sniper_count > 0) then {
 		for "_xx" from 0 to (d_enemy_garrison_troop_sniper_count - 1) do {
 			_bldgIdx = _xx;
-			_numBldgPositions = count ((_buildingsArray select _bldgIdx) buildingPos -1);
+			//_numBldgPositions = count ((_buildingsArray select _bldgIdx) buildingPos -1);
 			//create the group but do not exceed the total number of positions in the building
 			//_numUnits = ((ceil random 4) max 2) min _numBldgPositions;
-			_numUnits = 2;
+			_numUnits = 1;
+			
+			//player sideChat format ["bldg: %1 bldgpos: %2 _xx: %3", str (_buildingsArray select _bldgIdx), str (getPos (_buildingsArray select _bldgIdx)), str _xx];
 
 			[
 				getPos (_buildingsArray select _bldgIdx),

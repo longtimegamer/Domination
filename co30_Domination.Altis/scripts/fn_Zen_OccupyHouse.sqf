@@ -99,6 +99,7 @@ _Zen_ArrayShuffle = {
 
 if (_buildingRadius < 0) then {
     _buildingsArray = [nearestBuilding _center];
+    //player sideChat format ["_center zen: %1 bldgarray count: %2", str _center, str (count _buildingsArray)];
 } else {
     _buildingsArray0 = nearestObjects [_center, ["house"], _buildingRadius];
     _buildingsArray1 = nearestObjects [_center, ["building"], _buildingRadius];
@@ -198,15 +199,19 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
                                     
                                 };
 
-                                if (_unitMovementMode == 1 || _unitMovementMode == 2) then {
-                                	(_units select _unitIndex) disableAI "TARGET";
-                                	(_units select _unitIndex) forceSpeed 0;
+								//occupy mode - no special behavior
+								if (_unitMovementMode == 0) then {
+									//do nothing
 								};
 
-								//_unitMovementMode == 0 -> no special behavior
-
-								//_unitMovementMode == 1 -> ambush mode - firedNear within 69m to restore unit ability to move and fire
+								//ambush mode - static until firedNear within 69m restores unit ability to move and fire
                                 if (_unitMovementMode == 1) then {
+                                	
+                                	if !(_doMove) then {
+                                		(_units select _unitIndex) disableAI "TARGET";
+										(_units select _unitIndex) forceSpeed 0;
+                                	};
+									
                                     (_units select _unitIndex) setVariable ["zen_fn_idx2", (_units select _unitIndex) addEventHandler ["FiredNear", {
                                         scriptName "spawn_zoh_firednear1ambush";
                                         (_this select 0) enableAI "TARGET";
@@ -216,7 +221,7 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
                                     }]];
                                 };
 								
-								//_unitMovementMode == 2 -> static mode
+								//sniper mode - static forever
 								if (_unitMovementMode == 2) then {
 									
 									//if defined, apply general skill modifier
@@ -233,6 +238,7 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
 										//highly aware snipers
 										[(_units select _unitIndex), d_side_player] spawn d_fnc_hallyg_dlegion_Snipe;
 									} else {
+										
 										//common snipers with up/down script triggered by firedNear within 69m
 										if (_isRoof) then {
 											(_units select _unitIndex) setUnitPos "MIDDLE";
@@ -248,7 +254,13 @@ for [{_j = 0}, {(_unitIndex < count _units) && {(count _buildingPosArray > 0)}},
 											}]];
 										};
 										
-									};									
+										if !(_doMove) then {
+											(_units select _unitIndex) disableAI "TARGET";
+											(_units select _unitIndex) forceSpeed 0;
+										};
+										
+									};
+																	
                                 };
 
                                 I(_unitIndex)
