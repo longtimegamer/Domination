@@ -854,16 +854,16 @@ class Params {
 	
 	class d_enemy_garrison_troop_sniper_general_skill {
 		title = "$STR_DOM_MISSIONSTRING_1900E";
-		values[] = {-1, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+		values[] = {-1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
 		default = -1;
-		texts[] = {"default", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
+		texts[] = {"default", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
 	};
 	
 	class d_enemy_garrison_troop_sniper_aimingShake_skill {
 		title = "$STR_DOM_MISSIONSTRING_1900F";
-		values[] = {-1, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
+		values[] = {-1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1};
 		default = -1;
-		texts[] = {"default", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
+		texts[] = {"default", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"};
 	};
 
 	class d_enemy_max_barracks_count {
