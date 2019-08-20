@@ -1,6 +1,7 @@
 params ["_unit", "_targetSide"];
 
-private _Dlos = {
+//by HallyG, dLegion
+private _isLOS = {
 	params ["_looker", "_target", "_FOV"];
     
     if ([position _looker, getDir _looker, _FOV, position _target] call BIS_fnc_inAngleSector) then {
@@ -12,6 +13,44 @@ private _Dlos = {
     };
 };
 
+//by Jezuro
+private _sortArrayByDistance = {
+    params ["_unitArray", "_fromPosition"];
+    _unsorted = _unitArray;
+    _sorted = [];
+    _pos = _fromPosition;
+
+    {
+        _closest = _unsorted select 0;
+        {if ((getPos _x distance _pos) < (getPos _closest distance _pos)) then {_closest = _x}} forEach _unsorted;
+        _sorted = _sorted + [_closest];
+        _unsorted = _unsorted - [_closest]
+    } forEach _unsorted;
+
+    _sorted
+};
+
+//by sarogahtyp
+private _isVisible = {
+    params ["_unit", "_target"];
+    _visibleThreshold = 0.05;
+    _targetEye = eyepos _target;
+    _unitEye = eyepos _unit;
+
+    _unit_in_dir = _unitEye vectorAdd ((_unitEye vectorFromTo _targetEye) vectorMultiply 0.5);
+    _target_in_dir = _targetEye vectorAdd ((_targetEye vectorFromTo _unitEye) vectorMultiply 0.5);
+
+    //player sideChat format ["isVisible value: %1", str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir])];
+    if (parseNumber str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir]) > 0.05) then {
+        true
+    } else {
+        false
+    };
+};
+
+//in meters
+_detectionRadius = 2000;
+
 sleep random 1;
 
 _unit disableAI "PATH";
@@ -19,36 +58,33 @@ _unit disableAI "AIMINGERROR";
 _unit disableAI "TARGET";
 _unit forceSpeed 0;
 
-player sideChat format ["start sniper aware loop for unit %1", _unit];
-
 //sniper aware loop
 while { 1 == 1 } do {
 	
-		_Dtargets = [];
-		
-		{
-			if ((_x distance2D _unit) < 2000 && (side _x == _targetSide) && (_x isKindOf "CAManBase") && (alive _x)) then {
-				_unit reveal [_x,4];
-				_Dtargets pushBack _x;
-			};
-		} forEach allunits;
-		
-		_Tcount = count _Dtargets;
-	   
-	   if (_Tcount > 0) then {
-			player sideChat "found a target";
-			//one or more targets found
-			_Target = (selectRandom _Dtargets);
-			_unit doTarget _Target;
-			_unit doSuppressiveFire _Target;
-			sleep 0;
-			if ([_unit, _Target, 130] call _Dlos) then {
-				player sideChat "shooting!";
-				_unit forceWeaponFire [(currentWeapon _unit), "Single"];
-			};
-		};
+    _Dtargets = [];
+
+    {
+        if (
+            (_x distance2D _unit) < _detectionRadius && (side _x == _targetSide) && (_x isKindOf "CAManBase") && (alive _x)
+             && (isTouchingGround (vehicle player) && !(vehicle _unit isKindOf "Air"))
+        ) then {
+            //player sideChat format ["found eligible target: %1", _x];
+            _unit reveal [_x,4];
+            _Dtargets pushBack _x;
+        };
+    } forEach allunits;
+
+    {
+        if (([_unit, _x, 360] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
+            //player sideChat format ["found eligible and visible target: %1", _x];
+            _unit doTarget _x;
+            _unit doSuppressiveFire _x;
+            //player sideChat "shooting!";
+            _unit forceWeaponFire [(currentWeapon _unit), "Single"];
+        };
+    } forEach ([_Dtargets, getPos _unit] call _sortArrayByDistance);
 	
 	_unit setVehicleAmmo 1;
-	sleep 5;
+	sleep 10;
 	
 };
