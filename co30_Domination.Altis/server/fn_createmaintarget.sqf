@@ -376,7 +376,7 @@ if (d_enemy_occupy_bldgs == 1) then {
 	//create garrisoned "ambush" groups of AI (free to move after firedNear is triggered)
 	if (d_enemy_garrison_troop_ambush_count > 0) then {
 		for "_xx" from 0 to (d_enemy_garrison_troop_ambush_count - 1) do {
-			_numUn = (ceil random 8) max 4;
+			_numUn = 3 + (round random 2);
 			[
 				[[[_trg_center, 100]],[]] call BIS_fnc_randomPos,
 				_numUn,			//unit count
