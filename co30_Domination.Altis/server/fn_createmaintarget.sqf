@@ -444,7 +444,7 @@ if (d_enemy_occupy_bldgs == 1) then {
 			//_numBldgPositions = count ((_buildingsArray select _bldgIdx) buildingPos -1);
 			//create the group but do not exceed the total number of positions in the building
 			//_numUnits = ((ceil random 4) max 2) min _numBldgPositions;
-			_numUnits = 1;
+			_numUnits = 2;
 			
 			//player sideChat format ["bldg: %1 bldgpos: %2 _xx: %3", str (_buildingsArray select _bldgIdx), str (getPos (_buildingsArray select _bldgIdx)), str _xx];
 
