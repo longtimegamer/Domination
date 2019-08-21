@@ -393,33 +393,51 @@ if (d_enemy_occupy_bldgs == 1) then {
 
     //create garrisoned "sniper" groups of AI (static, never leave spawn position)
 	//START create garrisoned groups of snipers
-	//prepare to create garrisoned groups of snipers - find and sort tallest buildings
+	//prepare to create garrisoned groups of snipers - find and sort buildings
 	_buildingsArray = [];
 	_buildingRadius = 425;
-    _buildingsArray0 = nearestObjects [_trg_center, ["house"], _buildingRadius];
-    _buildingsArray1 = nearestObjects [_trg_center, ["building"], _buildingRadius];
-    _buildingsArrayRaw = _buildingsArray0 arrayIntersect _buildingsArray1;
+    _buildingsArrayRaw = nearestObjects [_trg_center, ["Building", "House"], _buildingRadius];
 
     _buildingsArrayUsable = [];
 
     {
+    	//only buildings with positions for AI are usable
     	_poss = _x buildingPos -1;
 		if !(_poss isEqualTo []) then {
 			_buildingsArrayUsable pushBack _x;
 		};
     } forEach _buildingsArrayRaw;
 
-    //sort by height
-    _buildingsArraySorted = [_buildingsArrayUsable, [_trg_center], { _x modelToWorld (boundingBox _x select 1) select 2 }, "DESCEND", { 1 == 1 }] call BIS_fnc_sortBy;
+    //sort by building height
+    //_buildingsArraySorted = [_buildingsArrayUsable, [_trg_center], { _x modelToWorld (boundingBox _x select 1) select 2 }, "DESCEND", { 1 == 1 }] call BIS_fnc_sortBy;
+    
+    //sort by elevation - sort by highest position in each building
+    _buildingsArraySorted = [
+    	_buildingsArrayUsable,
+    	[],
+    	{
+    		private _topElevation = 0;
+    		private _currentElevation = 0;
+    		private _bldg = _x;
+			_posArray = _bldg buildingPos -1;
+			
+			{
+				_currentElevation = _x select 2; //Z axis
+				if (_currentElevation > _topElevation) then { _topElevation = _currentElevation };
+			} forEach _posArray;
+			
+			_topElevation
+		},
+		"DESCEND"] call BIS_fnc_sortBy;
 
-    //choose the Top N of tallest buildings array
+    //choose the Top N of sorted buildings array
     if (d_enemy_garrison_troop_sniper_count > 0) then {
 		for "_i" from 0 to (d_enemy_garrison_troop_sniper_count - 1) do {
 			_buildingsArray pushBack (_buildingsArraySorted select _i);
 		};
     };
 
-	//create garrisoned groups of snipers with Top N of tallest buildings
+	//create garrisoned groups of snipers with Top N of sorted buildings
 	if (d_enemy_garrison_troop_sniper_count > 0) then {
 		for "_xx" from 0 to (d_enemy_garrison_troop_sniper_count - 1) do {
 			_bldgIdx = _xx;

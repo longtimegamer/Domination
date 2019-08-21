@@ -1,6 +1,6 @@
 params ["_unit", "_targetSide"];
 
-//by HallyG, dLegion
+//by HallyG, dlegion
 private _isLOS = {
 	params ["_looker", "_target", "_FOV"];
     
@@ -33,7 +33,7 @@ private _sortArrayByDistance = {
 //by sarogahtyp
 private _isVisible = {
     params ["_unit", "_target"];
-    _visibleThreshold = 0.05;
+    _visibleThreshold = 0.02;
     _targetEye = eyepos _target;
     _unitEye = eyepos _unit;
 
