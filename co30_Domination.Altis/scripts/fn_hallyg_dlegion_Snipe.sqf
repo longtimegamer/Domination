@@ -1,3 +1,5 @@
+#define EYE_HEIGHT 1.53
+
 params ["_unit", "_targetSide"];
 
 //by HallyG, dlegion
@@ -6,6 +8,7 @@ private _isLOS = {
     
     if ([position _looker, getDir _looker, _FOV, position _target] call BIS_fnc_inAngleSector) then {
     	_lineIntersections = lineIntersectsSurfaces [(AGLtoASL (_looker modelToWorldVisual (_looker selectionPosition "pilot"))), getPosASL _target, _target, _looker, true, 1,"GEOM","NONE"];
+		//player sideChat format ["lineIntersections: %1", _lineIntersections ];
     	if (count (_lineIntersections) > 0) exitWith { false };
     	true
     } else {
@@ -75,8 +78,6 @@ while { 1 == 1 } do {
             //player sideChat format ["found eligible target: %1", _x];
             _unit reveal [_x,4];
             _Dtargets pushBack _x;
-        } else {
-            //if (alive _x && isPlayer _x) then { player sideChat format ["target is NOT eligible: %1", _x]; };
         };
     } forEach allunits;
 
@@ -84,9 +85,9 @@ while { 1 == 1 } do {
 
     {
         if (([_unit, _x] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
+            //player sideChat format ["shooting at %1 with %2", _x, currentWeapon _unit];
             _unit doTarget _x;
             _unit doSuppressiveFire _x;
-            //player sideChat format ["shooting at %1", _x];
             //_unit forceWeaponFire [(currentWeapon _unit), "Single"];
         };
         //player sideChat format ["found eligible target but cannot shoot it: %1", _x];
