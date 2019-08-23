@@ -37,11 +37,15 @@ private _isVisible = {
     _targetEye = eyepos _target;
     _unitEye = eyepos _unit;
 
+    //vector origins are half meter away from looker and target (uses 0.5 of a normalized vector which by definition is 1 meter)
     _unit_in_dir = _unitEye vectorAdd ((_unitEye vectorFromTo _targetEye) vectorMultiply 0.5);
     _target_in_dir = _targetEye vectorAdd ((_targetEye vectorFromTo _unitEye) vectorMultiply 0.5);
 
-    //player sideChat format ["isVisible value: %1", str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir])];
-    if (parseNumber str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir]) > 0.05) then {
+    _visiblity = parseNumber str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir]);
+
+    //player sideChat format ["isVisible value: %1", _visiblity];
+
+    if (_visiblity > _visibleThreshold) then {
         true
     } else {
         false
@@ -71,17 +75,22 @@ while { 1 == 1 } do {
             //player sideChat format ["found eligible target: %1", _x];
             _unit reveal [_x,4];
             _Dtargets pushBack _x;
+        } else {
+            //if (alive _x && isPlayer _x) then { player sideChat format ["target is NOT eligible: %1", _x]; };
         };
     } forEach allunits;
 
+    //player sideChat format ["target list _Dtargets: %1", _Dtargets];
+
     {
-        if (([_unit, _x, 360] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
-            //player sideChat format ["found eligible and visible target: %1", _x];
+        if (([_unit, _x] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
             _unit doTarget _x;
             _unit doSuppressiveFire _x;
-            //player sideChat "shooting!";
-            _unit forceWeaponFire [(currentWeapon _unit), "Single"];
+            //player sideChat format ["shooting at %1", _x];
+            //_unit forceWeaponFire [(currentWeapon _unit), "Single"];
         };
+        //player sideChat format ["found eligible target but cannot shoot it: %1", _x];
+
     } forEach ([_Dtargets, getPos _unit] call _sortArrayByDistance);
 	
 	_unit setVehicleAmmo 1;
