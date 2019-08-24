@@ -99,16 +99,17 @@ while { 1 == 1 } do {
 	    _unit setVehicleAmmo 1;
         sleep 10;
 	} else {
-	    if (unitPos _unit == "UP") then {
-	        _unit setUnitPos "DOWN";
-            sleep ((ceil random 60) max 10);
-	    } else if (unitPos _unit == "DOWN") then {
-            _unit setUnitPos "MIDDLE";
-        } else if (unitPos _unit == "MIDDLE") then {
-            _unit setUnitPos "UP";
-        };
-	}
-
-
-	
+		switch (unitPos _unit) do {
+			case "UP": {
+				_unit setUnitPos "DOWN";
+				sleep ((ceil random 60) max 10);
+			};
+			case "DOWN": {
+				_unit setUnitPos "MIDDLE";
+			};
+			case "MIDDLE": {
+            	_unit setUnitPos "UP";				
+			};
+		};
+	}	
 };
