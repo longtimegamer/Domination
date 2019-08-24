@@ -82,19 +82,33 @@ while { 1 == 1 } do {
     } forEach allunits;
 
     //player sideChat format ["target list _Dtargets: %1", _Dtargets];
-
+    _fired = false;
     {
         if (([_unit, _x] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
             //player sideChat format ["shooting at %1 with %2", _x, currentWeapon _unit];
             _unit doTarget _x;
             _unit doSuppressiveFire _x;
             //_unit forceWeaponFire [(currentWeapon _unit), "Single"];
+            _fired = true;
         };
         //player sideChat format ["found eligible target but cannot shoot it: %1", _x];
 
     } forEach ([_Dtargets, getPos _unit] call _sortArrayByDistance);
-	
-	_unit setVehicleAmmo 1;
-	sleep 10;
+
+	if (_fired) then {
+	    _unit setVehicleAmmo 1;
+        sleep 10;
+	} else {
+	    if (unitPos _unit == "UP") then {
+	        _unit setUnitPos "DOWN";
+            sleep ((ceil random 60) max 10);
+	    } else if (unitPos _unit == "DOWN") then {
+            _unit setUnitPos "MIDDLE";
+        } else if (unitPos _unit == "MIDDLE") then {
+            _unit setUnitPos "UP";
+        };
+	}
+
+
 	
 };
