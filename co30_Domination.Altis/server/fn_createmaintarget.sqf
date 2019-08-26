@@ -380,7 +380,7 @@ if (d_enemy_occupy_bldgs == 1) then {
 			[
 				[[[_trg_center, 100]],[]] call BIS_fnc_randomPos,
 				_numUn,			//unit count
-				250,		//fillRadius
+				425,		//fillRadius
 				false,		//fillRoof
 				false,		//fillEvenly
 				false,		//fillTopDown
