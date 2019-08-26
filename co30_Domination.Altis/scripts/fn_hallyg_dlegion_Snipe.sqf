@@ -1,3 +1,7 @@
+#define __DEBUG__
+#define THIS_FILE "fn_hallyg_dlegion_Snipe.sqf"
+#include "..\x_setup.sqf"
+
 #define EYE_HEIGHT 1.53
 
 params ["_unit", "_targetSide"];
@@ -8,8 +12,12 @@ private _isLOS = {
     
     if ([position _looker, getDir _looker, _FOV, position _target] call BIS_fnc_inAngleSector) then {
     	_lineIntersections = lineIntersectsSurfaces [(AGLtoASL (_looker modelToWorldVisual (_looker selectionPosition "pilot"))), getPosASL _target, _target, _looker, true, 1,"GEOM","NONE"];
-		//player sideChat format ["lineIntersections: %1", _lineIntersections ];
-    	if (count (_lineIntersections) > 0) exitWith { false };
+#ifdef __DEBUG__
+	__TRACE_1("", format ["lineIntersections: %1", _lineIntersections ]);
+#endif
+    	if (count (_lineIntersections) > 0) exitWith {
+    		false
+		};
     	true
     } else {
     	false
@@ -36,7 +44,7 @@ private _sortArrayByDistance = {
 //by sarogahtyp
 private _isVisible = {
     params ["_unit", "_target"];
-    _visibleThreshold = 0.02;
+    _visibleThreshold = 0.015;
     _targetEye = eyepos _target;
     _unitEye = eyepos _unit;
 
@@ -45,8 +53,11 @@ private _isVisible = {
     _target_in_dir = _targetEye vectorAdd ((_targetEye vectorFromTo _unitEye) vectorMultiply 0.5);
 
     _visiblity = parseNumber str ([objNull, "VIEW"] checkVisibility [_target_in_dir, _unit_in_dir]);
-
-    //player sideChat format ["isVisible value: %1", _visiblity];
+    
+#ifdef __DEBUG__
+	_mgs = format ["isVisible value: %1 threshold: %2 target: %3", _visiblity, _visibleThreshold, _target];
+	__TRACE_1("", _msg);
+#endif
 
     if (_visiblity > _visibleThreshold) then {
         true
@@ -64,6 +75,12 @@ _unit disableAI "PATH";
 _unit disableAI "AIMINGERROR";
 _unit disableAI "TARGET";
 _unit forceSpeed 0;
+_unit setCombatMode "RED";
+
+#ifdef __DEBUG__
+	_msg = format ["unit combatMode: %1", combatMode _unit];
+	__TRACE_1("", _msg);
+#endif
 
 //sniper aware loop
 while { 1 == 1 } do {
@@ -73,42 +90,74 @@ while { 1 == 1 } do {
     {
         if (
             (_x distance2D _unit) < _detectionRadius && (side _x == _targetSide) && (_x isKindOf "CAManBase") && (alive _x)
-             && (isTouchingGround (vehicle player) && !(vehicle _unit isKindOf "Air"))
+             //&& (isTouchingGround (vehicle player) && !(vehicle _unit isKindOf "Air"))
         ) then {
-            //player sideChat format ["found eligible target: %1", _x];
+#ifdef __DEBUG__
+	_msg = format ["found eligible target: %1", _x];
+	__TRACE_1("", _msg);
+#endif
             _unit reveal [_x,4];
             _Dtargets pushBack _x;
         };
     } forEach allunits;
-
-    //player sideChat format ["target list _Dtargets: %1", _Dtargets];
+    
     _fired = false;
+    _targetUnit = nil;
     {
         if (([_unit, _x] call _isVisible) || ([_unit, _x, 360] call _isLOS)) exitWith {
-            //player sideChat format ["shooting at %1 with %2", _x, currentWeapon _unit];
+        	//to check if unit actually fired
+        	_ammoCount = _unit ammo primaryWeapon _unit;
+#ifdef __DEBUG__
+	_msg = format ["shooting at %1 with %2", _x, currentWeapon _unit];
+	__TRACE_1("", _msg);
+#endif
+			_targetUnit = _unit;
             _unit doTarget _x;
             _unit doSuppressiveFire _x;
-            //_unit forceWeaponFire [(currentWeapon _unit), "Single"];
-            _fired = true;
+			//_unit forceWeaponFire [(currentWeapon _unit), "Single"];
+			sleep 3;
+			if (_ammoCount > _unit ammo primaryWeapon _unit) then {
+				//yes the unit actually fired
+				_fired = true;
+			};
         };
-        //player sideChat format ["found eligible target but cannot shoot it: %1", _x];
-
+#ifdef __DEBUG__
+	_msg = format ["found eligible target but cannot shoot it: %1", _x];
+	__TRACE_1("", _msg);
+#endif
     } forEach ([_Dtargets, getPos _unit] call _sortArrayByDistance);
 
 	if (_fired) then {
+#ifdef __DEBUG__
+	_msg = format ["fired at: %1", _targetUnit];
+	__TRACE_1("", _msg);
+#endif
 	    _unit setVehicleAmmo 1;
-        sleep 10;
 	} else {
-		switch (unitPos _unit) do {
+#ifdef __DEBUG__
+	_msg = format ["did not fire at: %1", _targetUnit];
+	__TRACE_1("", _msg);
+#endif
+		switch (toUpper (unitPos _unit)) do {
+			case "AUTO";
 			case "UP": {
+				_unit setCombatMode "BLUE";
 				_unit setUnitPos "DOWN";
-				sleep ((ceil random 60) max 10);
+				//sleep ((ceil random 30) max 10);
+				sleep 3;
+				_unit setCombatMode "RED";
 			};
 			case "DOWN": {
+				_unit setCombatMode "BLUE";
 				_unit setUnitPos "MIDDLE";
+				sleep 3;
+				_unit setCombatMode "RED";
 			};
 			case "MIDDLE": {
-            	_unit setUnitPos "UP";				
+				_unit setCombatMode "BLUE";
+            	_unit setUnitPos "UP";
+            	_unit setCombatMode "RED";	
+            	sleep 3;			
 			};
 		};
 	}	
