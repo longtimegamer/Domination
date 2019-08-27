@@ -66,6 +66,10 @@ private _isVisible = {
     };
 };
 
+//private _randomNearbyPositionIndexOnSameCurrentZAxis = {
+//	params ["_currentPos"]
+//}
+
 //in meters
 _detectionRadius = 2000;
 
@@ -81,6 +85,9 @@ _unit setCombatMode "RED";
 	_msg = format ["unit combatMode: %1", combatMode _unit];
 	__TRACE_1("", _msg);
 #endif
+
+_cantShoot = 0;
+_findBetterPositionThreshold = 3;
 
 //sniper aware loop
 while { 1 == 1 } do {
@@ -121,6 +128,8 @@ while { 1 == 1 } do {
 				_fired = true;
 			};
         };
+        _cantShoot = _cantShoot + 1;
+
 #ifdef __DEBUG__
 	_msg = format ["found eligible target but cannot shoot it: %1", _x];
 	__TRACE_1("", _msg);
@@ -160,5 +169,65 @@ while { 1 == 1 } do {
             	sleep 3;			
 			};
 		};
-	}	
+	}
+	
+	
+    if (_cantShoot >= _findBetterPositionThreshold) then {
+    	//find other positions
+    	_newPossiblePositions = [];
+    	
+    	//find by filtering same elevation as current position (rounded)
+    	_bldg = nearestBuilding getPos _unit;
+    	_posArray = _bldg buildingPos -1;
+    	_currentPos = (getPosATL _unit);
+		_currentElevation = _currentPos select 2; //Z axis    	
+		{
+			_itemElevation = _x select 2; //Z axis
+
+			//player sideChat format ["curr elev: %1", _currentElevation];
+			//player sideChat format ["item elev: %1", _itemElevation];
+
+			
+			if ((round _currentElevation == round _itemElevation) && !(_x isEqualTo getPosATL _unit)) then {
+				_newPossiblePositions pushBack _x;
+			};
+		} forEach _posArray;
+		
+		//player sideChat format ["newPossiblePositions: %1", _newPossiblePositions];
+		//_newPos = selectRandom _newPossiblePositions;
+		
+		
+		
+		///find random position in current building
+		//_newPossiblePositions = [];
+		_newPossiblePositions = nearestBuilding _unit buildingPos -1;
+		_newPos = selectRandom _newPossiblePositions;
+		
+		
+
+		player sideChat format ["newPos: %1", _newPos];
+		player sideChat format ["currentPos: %1", _currentPos];
+    	
+    	_unit forceSpeed -1;
+    	_unit enableAI "TARGET";
+		_unit enableAI "AUTOTARGET";
+		_unit enableAI "MOVE";
+		_unit forceSpeed -1;
+		//_unit doMove ASLToATL ([_newPos select 0, _newPos select 1, (_newPos select 2) - EYE_HEIGHT]);
+		//_unit doMove ASLToATL ([_newPos select 0, _newPos select 1, _newPos select 2]);
+		player sideChat "doMove start";
+		//player sideChat format ["doMove pos: %1", ((nearestBuilding _unit) buildingPos 7)];
+		//_unit doMove ((nearestBuilding _unit) buildingPos 7);  //doesnt work
+		//_unit setPos ((nearestBuilding _unit) buildingPos 7);  //works
+		_unit setPos _newPos;
+		_future = time + 15;
+        waitUntil { (time >= _future || unitReady _unit) };
+    	//waitUntil { unitReady _unit };
+		player sideChat "doMove complete";
+		_unit forceSpeed 0;
+    	_unit disableAI "TARGET";
+    	
+    	_cantShoot = 0;
+    };
+    
 };
