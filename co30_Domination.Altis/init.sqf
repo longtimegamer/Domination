@@ -35,4 +35,6 @@ if (productVersion # 2 < 200) exitWith {
 	forceEnd;
 };
 
+execVM "PF\init.sqf";
+
 diag_log [diag_frameno, diag_ticktime, time, "Dom init.sqf processed"];
