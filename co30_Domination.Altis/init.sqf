@@ -35,4 +35,7 @@ if (productVersion # 2 < 200) exitWith {
 	forceEnd;
 };
 
+if (d_enable_civ_furniture > 0) then {
+	execVM "PF\init.sqf";
+};
 diag_log [diag_frameno, diag_ticktime, time, "Dom init.sqf processed"];
