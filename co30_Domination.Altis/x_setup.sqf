@@ -18,7 +18,7 @@
 
 //#define __CARRIER__
 
-//#define __CUP__
+#define __CUP__
 
 //#define __IFA3__
 
