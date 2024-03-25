@@ -2790,9 +2790,9 @@ d_arti_observer_W = [["B_recon_JTAC_F"]];
 		"C_Truck_02_covered_F", 0.25,
 		"C_Van_01_box_F", 0.25,
 		"C_Van_02_transport_F", 0.25,
-		"C_Hatchback_01_sport_F", 0.25,
-		"C_Offroad_02_unarmed_F", 0.25,
-		"C_SUV_01_F", 0.5
+		"C_Offroad_02_unarmed_F", 0.5,
+		"C_SUV_01_F", 0.5,
+		"C_IDAP_Van_medevac_02_F", 0.25
 	];
 
 	d_civVehiclesWeightedCityWealthLow = [
@@ -2800,7 +2800,8 @@ d_arti_observer_W = [["B_recon_JTAC_F"]];
 		"C_Truck_02_covered_F", 0.25,
 		"C_Truck_02_transport_F", 0.25,
 		"C_Van_01_box_F", 0.25,
-		"C_Van_02_transport_F", 0.25
+		"C_Van_02_transport_F", 0.25,
+		"C_IDAP_Van_medevac_02_F", 0.25
 	];
 
 	d_civVehiclesWeightedRural = [
@@ -2842,7 +2843,8 @@ d_arti_observer_W = [["B_recon_JTAC_F"]];
 		"CUP_C_skoda_blue_civ", 1,
 		"CUP_C_skoda_red_civ", 1,
 		"CUP_C_ikarus_chernarus", 0.25,
-		"CUP_C_bus_city_crciv", 0.25
+		"CUP_C_bus_city_crciv", 0.25,
+		"CUP_B_S1203_Ambulance_CR", 0.25
 	];
 	
 	d_civVehiclesWeightedCityWealthLowCFP =+ d_civVehiclesWeightedCityWealthLowCup;
