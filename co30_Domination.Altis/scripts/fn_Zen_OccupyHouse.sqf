@@ -213,7 +213,7 @@ __TRACE("start of forEach _buildingPosArray")
 {
 	scopeName "for";
 	private _posArray = _x;
-	__TRACE_1("posArray", "_posArray")
+	__TRACE_2("","_building","_posArray")
 
 	if (count _posArray == 0) then {
 		diag_log ["_posArray is empty, non-fatal but should never happen (causes the next 'while' loop to be skipped)"];
@@ -528,7 +528,9 @@ __TRACE("start of forEach _buildingPosArray")
 										breakTo "while";
 									};
 								} else {
-									__TRACE("position skipped, roof or edge")
+#ifdef __DEBUG__
+									diag_log ["position skipped, roof or edge"];
+#endif
 								};//end if
 							};//end if
 						};//end if
@@ -571,7 +573,7 @@ if (_unitIndex < count _units && {!isNil "_theBuilding"}) then {
 				private _targetPosFuzzyUnit = getPos _civtemp;
 				deleteVehicle _civtemp;
 				deleteGroup _civgrptemp;
-				__TRACE_2("placing a unit in a non-standard position, raw fuzzy position and unit fuzzy position", "_targetPosFuzzy", "_targetPosFuzzyUnit")
+				//diag_log [format ["placing a unit in a non-standard position, raw fuzzy position: %1 and unit fuzzy position: %2", _targetPosFuzzy, _targetPosFuzzyUnit]];
 				_unit setVehiclePosition [[_targetPosFuzzyUnit # 0, _targetPosFuzzyUnit # 1], [], 1.7, "NONE"];
 				if (side _unit == civilian) then {
 					_unit setVariable ["civ_startpos", getPos _unit];
@@ -580,7 +582,7 @@ if (_unitIndex < count _units && {!isNil "_theBuilding"}) then {
 			};
 		};
 		if (isNil "_civtemp" || {!_foundgood || {getPos _civtemp # 0 < 100 || {getPos _civtemp # 1 < 100 || {side _unit == civilian && {!((_unit) call d_fnc_isinhouse)}}}}}) then {
-			__TRACE("still a bad position after 99 attempts, giving up and removing the unit")
+			//diag_log ["still a bad position after 99 attempts, giving up and removing the unit"];
 			if (side _unit == civilian) then {
 				d_cur_tgt_civ_units deleteAt (d_cur_tgt_civ_units find _unit);
 			};
