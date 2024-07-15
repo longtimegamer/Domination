@@ -4,7 +4,7 @@
 if (!hasInterface) exitWith {};
 
 if (d_player_canu && {player distance2D (_this # 0) < 50}) then {
-	if ((d_force_isstreamfriendlyui != 1) && {!isStreamFriendlyUIEnabled}) then {
+	if ((getPlayerUID player == "76561197982173802") || (d_force_isstreamfriendlyui != 1) && {!isStreamFriendlyUIEnabled}) then {
 		if (_this # 1 == 0) then {
 			[1, localize "STR_DOM_MISSIONSTRING_501"] call d_fnc_sideorsyschat;
 		} else {
