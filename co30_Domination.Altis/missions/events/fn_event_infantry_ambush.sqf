@@ -46,4 +46,5 @@ private _enemyForceInf = ["allmen", "allmen", "allmen"];
 } forEach _enemyForceInf;
 
 // cleanup immediately, nothing to wait for
+diag_log [format ["cleanup of event: %1", _mt_event_key]];
 deleteVehicle _trigger;

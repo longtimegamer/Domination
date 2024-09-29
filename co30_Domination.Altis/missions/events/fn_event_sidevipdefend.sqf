@@ -35,7 +35,7 @@ _event_start_time = _trigger getVariable "d_event_start_time";
 private _allActors = [];
 
 // select a starting point, units will be moved later to occupy a building if possible
-private _nposss = _poss findEmptyPosition [0, 25, d_sm_pilottype];
+private _nposss = _poss findEmptyPosition [0, 99, d_sm_pilottype];
 if (_nposss isEqualTo []) then {_nposss = _poss};
 
 private _rescueGroup = [d_own_side] call d_fnc_creategroup;

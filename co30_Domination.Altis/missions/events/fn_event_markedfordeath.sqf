@@ -81,6 +81,7 @@ if (!(_event_target in d_priority_targets)) then {
 };
 
 // cleanup
+diag_log [format ["cleanup of event: %1", _mt_event_key]];
 if (_event_target in d_priority_targets) then {
 	d_priority_targets deleteAt (d_priority_targets find _event_target);
 	publicVariable "d_priority_targets";

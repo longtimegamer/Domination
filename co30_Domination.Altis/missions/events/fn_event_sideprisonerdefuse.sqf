@@ -76,7 +76,7 @@ d_kb_logic1 kbTell [
 private _prisonerGroup = [d_own_side] call d_fnc_creategroup;
 
 __TRACE_1("","_prisonerGroup")
-private _pos = (getPos _bldg) findEmptyPosition [0, 25, d_sm_pilottype];
+private _pos = (getPos _bldg) findEmptyPosition [0, 99, d_sm_pilottype];
 if (_pos isEqualTo []) then { _pos = getPos _bldg };
 
 // create pilot1

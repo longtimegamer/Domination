@@ -147,6 +147,7 @@ while {sleep 5; !d_mt_done} do {
 };
 
 //cleanup
+diag_log [format ["cleanup of event: %1", _mt_event_key]];
 {
 	deleteVehicle _x;
 } forEach _newunits;

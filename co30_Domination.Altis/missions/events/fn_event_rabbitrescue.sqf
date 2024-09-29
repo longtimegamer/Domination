@@ -160,6 +160,9 @@ if (_is_rescued || {!_is_dead}) then {
 	};
 };
 
+// cleanup
+diag_log [format ["cleanup of event: %1", _mt_event_key]];
+
 deleteVehicle _rabbit;
 deleteVehicle _ai;
 deleteVehicle _trigger;
