@@ -18,7 +18,12 @@ params [
 	["_join_player", false] // deprecated
 ];
 
-private _buildings = [_target_center, (_target_radius * 1.25)] call d_fnc_getbldgswithpositions;
+private _event_name = "CIV_RESISTANCE_INDEPENDENT";
+private _mt_event_key = format ["d_X_MTEVENT_%1_%2", d_cur_tgt_name, _event_name];
+
+diag_log [format ["start event: %1", _mt_event_key]];
+
+private _buildings = [_target_center, (_target_radius * 0.75)] call d_fnc_getbldgswithpositions;
 if (count _buildings < 1) exitWith {};
 
 private _eventDescription = localize "STR_DOM_MISSIONSTRING_CIV_RESISTANCE";
@@ -97,7 +102,7 @@ for "_i" from 0 to _guerrillaGroupCount do {
 		// guerrillas are triggered by the friendly side fighting nearby
 		_x addEventHandler ["FiredNear", {
 			params ["_unit", "_firer", "_distance", "_weapon", "_muzzle", "_mode", "_ammo", "_gunner"];
-			if (captive _unit && {_firer call d_fnc_isplayer && {_unit distance2D _firer < 30 }}) then {
+			if (captive _unit && {isPlayer [_firer] && {_unit distance2D _firer < 30 }}) then {
 				// a player shooting near this unit has inspired his entire group to fight!
 				{
 					// restore weapons
@@ -146,10 +151,9 @@ while {sleep 5; !d_mt_done} do {
 	};
 };
 
-//cleanup
+// cleanup
 diag_log [format ["cleanup of event: %1", _mt_event_key]];
-{
-	deleteVehicle _x;
-} forEach _newunits;
+
+deleteVehicle _newunits;
 d_mt_event_messages_array deleteAt (d_mt_event_messages_array find _eventDescription);
 publicVariable "d_mt_event_messages_array";

@@ -13,8 +13,9 @@ if (true) exitWith {};
 if (!isServer) exitWith {};
 
 params ["_target_radius", "_target_center"];
-
-private _mt_event_key = format ["d_X_MTEVENT_%1", d_cur_tgt_name];
+private _event_name = "MARKED_FOR_DEATH";
+private _mt_event_key = format ["d_X_MTEVENT_%1_%2", d_cur_tgt_name, _event_name];
+diag_log [format ["start event: %1", _mt_event_key]];
 
 private _trigger = [_target_center, [(d_cur_target_radius * 0.50),(d_cur_target_radius * 0.50),0,false,10], ["ANYPLAYER","PRESENT",true], ["this","thisTrigger setVariable ['d_event_start_time', time];",""]] call d_fnc_CreateTriggerLocal;
 

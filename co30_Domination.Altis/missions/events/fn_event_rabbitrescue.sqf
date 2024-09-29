@@ -14,6 +14,7 @@ if !(isServer) exitWith {};
 params ["_target_radius", "_target_center"];
 
 private _mt_event_key = format ["d_X_MTEVENT_%1", d_cur_tgt_name];
+diag_log [format ["start event: %1", _mt_event_key]];
 
 private _trigger = [_target_center, [600,600,0,false,30], ["ANYPLAYER","PRESENT",true], ["this","thisTrigger setVariable ['d_event_start', true]",""]] call d_fnc_CreateTriggerLocal;
 
@@ -116,7 +117,7 @@ while {!d_mt_done && {!_is_dead && {!_is_rescued}}} do {
 	if (!alive _rabbit) exitWith {
 		_is_dead = true;
 	};
-	private _nobjs = (_rabbit nearEntities ["CAManBase", _distanceToEnableRescue]) select {alive _x && {(_x call d_fnc_isplayer) && {!(_x getVariable ["xr_pluncon", false]) && {!(_x getVariable ["ace_isunconscious", false])}}}};
+	private _nobjs = (_rabbit nearEntities ["CAManBase", _distanceToEnableRescue]) select {alive _x && {(isPlayer _x) && {!(_x getVariable ["xr_pluncon", false]) && {!(_x getVariable ["ace_isunconscious", false])}}}};
 	if (_nobjs isNotEqualTo []) then {
 		_is_rescued = true;
 	};
@@ -163,9 +164,7 @@ if (_is_rescued || {!_is_dead}) then {
 // cleanup
 diag_log [format ["cleanup of event: %1", _mt_event_key]];
 
-deleteVehicle _rabbit;
-deleteVehicle _ai;
-deleteVehicle _trigger;
+deleteVehicle [_rabbit, _ai, _trigger];
 deleteMarker _marker;
 
 d_mt_event_messages_array deleteAt (d_mt_event_messages_array find _eventDescription);

@@ -18,7 +18,9 @@ if (!isServer) exitWith {};
 
 params ["_target_radius", "_target_center"];
 
-private _mt_event_key = format ["d_X_MTEVENT_%1", d_cur_tgt_name];
+private _mt_event_key = format ["d_X_MTEVENT_%1_%2", d_cur_tgt_name, "RESCUE_DEFEND"];
+
+diag_log [format ["start event: %1", _mt_event_key]];
  
 //position the event site at max distance 85% of target radius and min 40% of target radius
 private _poss = [[[_target_center, (d_cur_target_radius * 0.85)]],[[_target_center, (d_cur_target_radius * 0.40)]]] call BIS_fnc_randomPos;
@@ -156,6 +158,7 @@ if (!(_pilot1 in d_priority_targets)) then {
 };
 
 // cleanup
+diag_log [format ["cleanup of event: %1", _mt_event_key]];
 if (_pilot1 in d_priority_targets) then {
 	d_priority_targets deleteAt (d_priority_targets find _pilot1);
 	publicVariable "d_priority_targets";
