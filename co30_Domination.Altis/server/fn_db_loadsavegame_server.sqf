@@ -221,6 +221,9 @@ d_bonus_vecs_db = _ar # 9;
 		if (d_bvp_counter > (count d_bonus_vec_positions - 1)) then {d_bvp_counter = 0};
 		_vec setVariable ["d_liftit", true, true];
 	};
+	if !(_vec isKindOf "Ship") then {
+		_vec setVariable ["d_drowned", true];
+	};
 	
 	__TRACE_1("","_endpos")
 
@@ -300,7 +303,7 @@ if (d_retaken_farpspos isEqualType "") then {
 };
 __TRACE_1("","d_retaken_farpspos")
 if (d_retaken_farpspos isEqualType [] && {d_retaken_farpspos isNotEqualTo []}) then {
-	private _allflags = (allMissionObjects "FlagCarrierCore") select {(str _x) select [0, 9] isEqualTo "d_flag_bb"};
+	private _allflags = (allMissionObjects "FlagCarrierCore") select {(str _x) find "d_flag_bb" == 0};
 	{
 		private _poss = _x;
 		private _flag = objNull;
@@ -409,6 +412,9 @@ private _fnc_tt_bonusvec = {
 			if (d_bvp_counter_w > (count _d_bonus_vec_positions - 1)) then {d_bvp_counter_w = 0};
 		};
 		_vec setVariable ["d_liftit", true, true];
+	};
+	if !(_vec isKindOf "Ship") then {
+		_vec setVariable ["d_drowned", true];
 	};
 
 	_vec setDir _dir;

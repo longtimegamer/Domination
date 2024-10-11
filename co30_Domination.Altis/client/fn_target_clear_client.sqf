@@ -25,16 +25,12 @@ d_mt_marker_triggers = [];
 #endif
 
 if (!isNil "d_client_barmhqtrigs") then {
-	{
-		deleteVehicle _x;
-	} forEach d_client_barmhqtrigs;
+	deleteVehicle d_client_barmhqtrigs;
 	d_client_barmhqtrigs = [];
 };
 
 if (!isNil "d_deletecamptrigs") then {
-	{
-		deleteVehicle _x;
-	} forEach d_deletecamptrigs;
+	deleteVehicle d_deletecamptrigs;
 	d_deletecamptrigs = [];
 };
 
@@ -52,7 +48,7 @@ if (!isNil "d_current_task") then {
 private _mt_str = format [localize "STR_DOM_MISSIONSTRING_570", d_cur_tgt_name];
 if (count d_resolved_targets < d_MainTargets) then {
 #ifndef __TT__
-	if (_extra_bonusn != "") then {
+	if (_extra_bonusn isNotEqualTo "") then {
 		private _bonus_string = format[localize "STR_DOM_MISSIONSTRING_571", [_extra_bonusn, "CfgVehicles"] call d_fnc_GetDisplayName];
 
 		hint composeText[
@@ -78,7 +74,7 @@ if (count d_resolved_targets < d_MainTargets) then {
 		default {""};
 	};
 
-	if (_extra_bonusn # 0 != "" || {_extra_bonusn # 0 != ""}) then {
+	if (_extra_bonusn # 0 isNotEqualTo "" || {_extra_bonusn # 0 isNotEqualTo ""}) then {
 		private _vecnn = switch (d_player_side) do {
 			case blufor: {_extra_bonusn # 0};
 			case opfor: {_extra_bonusn # 1};

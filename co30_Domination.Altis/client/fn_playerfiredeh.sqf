@@ -16,7 +16,7 @@ private _fnc_nearmhq = {
 		false
 	};	
 	_ets = player nearEntities ["ReammoBox_F", 25];
-	if (_ets isEqualTo [] || {!isNil {(_ets # 0) getVariable "d_nocheck"}}) exitWith {false};
+	if (_ets isEqualTo [] || {(_ets # 0) getVariable ["d_nocheck", false]}) exitWith {false};
 	true
 };
 
@@ -27,7 +27,7 @@ if ((_this # 6) isKindOf "BulletCore" || {(_this # 6) isKindOf "ShotgunCore"}) t
 	_do_exit = true;
 };
 
-if (!_do_exit && {(_this # 1) isEqualTo "Put" && {(d_player_in_air && {animationState player == "halofreefall_non"}) || {call _fnc_nearmhq}}}) exitWith {
+if (!_do_exit && {(_this # 1) isEqualTo "Put" && {(getUnitFreefallInfo player) # 0 || {call _fnc_nearmhq}}}) exitWith {
 	deleteVehicle (_this # 6);
 	player addMagazine (_this # 5);
 	systemChat (localize "STR_DOM_MISSIONSTRING_2006");

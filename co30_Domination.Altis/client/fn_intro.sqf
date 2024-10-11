@@ -72,7 +72,7 @@ private _str2 = "";
 #ifndef __TT__
 private _str = "One Team - " + d_version_string;
 private _start_pos = 4;
-if (d_with_ai) then {if (_str2 != "") then {_str2 = _str2 + " AI"} else {_str2 = _str2 + "AI"}};
+if (d_with_ai) then {if (_str2 isNotEqualTo "") then {_str2 = _str2 + " AI"} else {_str2 = _str2 + "AI"}};
 #else
 private _str = "Two Teams";
 private _sarray = [];
@@ -84,8 +84,8 @@ _start_pos = 3;
 #ifdef __RHS__
 _start_pos = 3;
 #endif
-if (d_with_ranked) then {if (_str2 != "") then {_str2 = _str2 + " RA"} else {_str2 = _str2 + "RA"}};
-if (d_WithRevive == 0) then {if (_str2 != "") then {_str2 = _str2 + " REVIVE"} else {_str2 = _str2 + "REVIVE"}};
+if (d_with_ranked) then {if (_str2 isNotEqualTo "") then {_str2 = _str2 + " RA"} else {_str2 = _str2 + "RA"}};
+if (d_WithRevive == 0) then {if (_str2 isNotEqualTo "") then {_str2 = _str2 + " REVIVE"} else {_str2 = _str2 + "REVIVE"}};
 private _start_pos2 = switch (count _str2) do {
 	case 2: {11};
 	case 3: {11};
@@ -109,7 +109,7 @@ private _start_pos2 = switch (count _str2) do {
 "d_DomFour" cutRsc ["d_DomFour", "PLAIN", 2];
 "d_ArmaLogo" cutRsc ["d_ArmaLogo", "PLAIN", 2];
 [_start_pos, _str, 5] execVM "IntroAnim\animateLettersX.sqf";_line = _line + 1; waitUntil {d_animL_i == _line};
-if (_str2 != "") then {[_start_pos2, _str2, 6] execVM "IntroAnim\animateLettersX.sqf";_line = _line + 1; waitUntil {d_animL_i == _line}};
+if (_str2 isNotEqualTo "") then {[_start_pos2, _str2, 6] execVM "IntroAnim\animateLettersX.sqf";_line = _line + 1; waitUntil {d_animL_i == _line}};
 switch (d_MissionType) do {
 	case 2: {
 		[4, localize "STR_DOM_MISSIONSTRING_263", 4] execVM "IntroAnim\animateLettersX.sqf";_line = _line + 1; waitUntil {d_animL_i == _line};
@@ -164,7 +164,7 @@ showChat true;
 };
 
 #ifndef __IFA3__
-if (sunOrMoon < 0.99 && {d_without_nvg == 1 && {player call d_fnc_hasnvgoggles}}) then {player action ["NVGoggles", player]};
+if (sunOrMoon < 0.99 && {d_without_nvg == 1 && {player call d_fnc_hasnvgoggles}}) then {player actionNow ["NVGoggles", player]};
 #endif
 
 private _uidcheck_done = false;
@@ -214,6 +214,9 @@ sleep 3;
 
 if (d_WithMHQTeleport == 0) then {
 	"d_introtxt2" cutText [format ["<t color='#ff0000' size='2'>%1</t>", localize "STR_DOM_MISSIONSTRING_1988"], "PLAIN DOWN", -1, true, true];
+	sleep 10;
 };
+
+"d_introtxt2" cutText [format ["<t color='#0000FF' size='2'>%1</t>", localize "STR_DOM_MISSIONSTRING_2114"], "PLAIN DOWN", -1, true, true];
 
 diag_log [diag_frameno, diag_ticktime, time, "Dom intro ended"];

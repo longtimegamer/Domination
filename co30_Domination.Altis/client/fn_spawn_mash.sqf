@@ -8,7 +8,7 @@ if (player getVariable "d_isinaction") exitWith {
 };
 
 if (player distance2D d_FLAG_BASE < 30) exitWith {
-	systemChat (localize "STR_DOM_MISSIONSTRING_246");
+	systemChat (localize "STR_DOM_MISSIONSTRING_246_a");
 	d_commandingMenuIniting = false;
 };
 
@@ -106,7 +106,7 @@ _medic_tent addAction [format ["<t color='#FF0000'>%1</t>", localize "STR_DOM_MI
 
 		private _medtent_content = (player getVariable "d_medic_tent") getVariable ["d_objcont", []];
 		if (_medtent_content isNotEqualTo []) then {
-			{deleteVehicle _x} forEach _medtent_content;
+			deleteVehicle _medtent_content;
 		};
 		deleteVehicle (player getVariable "d_medic_tent");
 		player setVariable ["d_medic_tent", objNull];

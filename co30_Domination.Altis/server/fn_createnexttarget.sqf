@@ -62,7 +62,15 @@ d_recapturedcamp = false;
 #endif
 
 d_pl_mt_score_hash = createHashMap;
+__TRACE("filling d_pl_mt_score_hash")
 {
+	__TRACE_1("","_x")
+#ifdef __DEBUG__
+	private _uid = getPlayerUID _x;
+	private _score = score _x;
+	private _name = name _x;
+	__TRACE_3("","_uid","_score","_name")
+#endif
 	d_pl_mt_score_hash set [getPlayerUID _x, [score _x, _x, name _x]];
 } forEach ((allPlayers - entities "HeadlessClient_F") select {!isNull _x && {!(_x isKindOf "VirtualMan_F")}});
 
@@ -83,19 +91,19 @@ __TRACE("!d_update_target done")
 #ifndef __TT__
 _tsar = call {
 	if (d_ao_check_for_ai == 0) exitWith {
-		["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured >= d_sum_camps}}", "0 = 0 spawn d_fnc_target_clear", ""]
+		["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured == d_sum_camps}}", "0 = 0 spawn d_fnc_target_clear", ""]
 	};
 	if (d_ao_check_for_ai == 1) exitWith {
-		["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured >= d_sum_camps && {'Car' countType thislist <= d_car_count_for_target_clear && {'Tank' countType thislist <= d_tank_count_for_target_clear && {'Man' countType thislist <= d_man_count_for_target_clear}}}}}", "0 = 0 spawn d_fnc_target_clear", ""]
+		["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured == d_sum_camps && {'Car' countType thislist <= d_car_count_for_target_clear && {'Tank' countType thislist <= d_tank_count_for_target_clear && {'Man' countType thislist <= d_man_count_for_target_clear}}}}}", "0 = 0 spawn d_fnc_target_clear", ""]
 	};
 	if (d_ao_check_for_ai == 2) exitWith {
 		["d_mt_radio_down && {'Car' countType thislist <= d_car_count_for_target_clear && {'Tank' countType thislist <= d_tank_count_for_target_clear && {'Man' countType thislist <= d_man_count_for_target_clear}}}", "0 = 0 spawn d_fnc_target_clear", ""]
 	};
 };
 #else
-//_tsar = ["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured_w >= d_sum_camps || {d_campscaptured_e >= d_sum_camps}}} && {('Car' countType thislist <= d_car_count_for_target_clear)} && {('Tank' countType thislist <= d_tank_count_for_target_clear)} && {('Man' countType thislist <= d_man_count_for_target_clear)}", "0 = 0 spawn d_fnc_target_clear", ""];
-private _tsar1 = ["d_mt_radio_down && {!d_lastchancerunning && {!d_lastchanceover && {d_mt_barracks_down && {d_sum_camps > 0 && {d_campscaptured_w >= d_sum_camps || {d_campscaptured_e >= d_sum_camps}}}}}}", "d_lastchancerunning = true; 0 = 0 spawn d_fnc_lastchance", ""];
-_tsar = ["d_mt_radio_down && {d_sum_camps > 0 && {d_lastchanceover && {d_mt_barracks_down && {d_campscaptured_w >= d_sum_camps || {d_campscaptured_e >= d_sum_camps}}}}}", "0 = 0 spawn d_fnc_target_clear", ""];
+//_tsar = ["d_mt_radio_down && {d_sum_camps > 0 && {d_campscaptured_w == d_sum_camps || {d_campscaptured_e == d_sum_camps}}} && {('Car' countType thislist <= d_car_count_for_target_clear)} && {('Tank' countType thislist <= d_tank_count_for_target_clear)} && {('Man' countType thislist <= d_man_count_for_target_clear)}", "0 = 0 spawn d_fnc_target_clear", ""];
+private _tsar1 = ["d_mt_radio_down && {!d_lastchancerunning && {!d_lastchanceover && {d_mt_barracks_down && {d_sum_camps > 0 && {d_campscaptured_w == d_sum_camps || {d_campscaptured_e == d_sum_camps}}}}}}", "d_lastchancerunning = true; 0 = 0 spawn d_fnc_lastchance", ""];
+_tsar = ["d_mt_radio_down && {d_sum_camps > 0 && {d_lastchanceover && {d_mt_barracks_down && {d_campscaptured_w == d_sum_camps || {d_campscaptured_e == d_sum_camps}}}}}", "0 = 0 spawn d_fnc_target_clear", ""];
 #endif
 
 __TRACE_1("","_tsar")

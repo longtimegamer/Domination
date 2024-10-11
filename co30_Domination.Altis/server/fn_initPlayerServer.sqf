@@ -7,13 +7,30 @@ diag_log [diag_frameno, diag_ticktime, time, "Executing MPF initPlayerServer.sqf
 #endif
 __TRACE_1("","_this")
 
+if (!isMultiplayer) exitWith {};
+
 params ["_pl"];
 
-if (remoteExecutedOwner != owner _pl) exitWith {};
+if (isNull _pl) exitWith {
+	diag_log "Domination ATTENTION!!!!!! A player connected as null object";
+	diag_log ["_this", _this];
+	diag_log "This means the player has not connected properly, resulting in a no unit message!!!!!";
+	diag_log "This may break scripts!!!!";
+};
 
-if (_pl isKindOf "HeadlessClient_F") exitWith {
+if (remoteExecutedOwner != owner _pl || {_pl isKindOf "VirtualSpectator_F"}) exitWith {
 	__TRACE_2("","_pl","owner _pl")
+};
+
+private _plid = getPlayerID _pl;
+
+__TRACE_1("","_plid")
+
+if (_plid getUserInfo 7) exitWith {
+	__TRACE_2("","_pl","owner _pl")
+#ifdef __DEBUG__
 	diag_log ["Dom initplayerserver headleass client connected"];
+#endif
 	d_hc_array pushBack _pl;
 	if (time > 10) then {
 		if (!isNil "d_recreatehcs_handle") then {
@@ -23,12 +40,10 @@ if (_pl isKindOf "HeadlessClient_F") exitWith {
 	};
 };
 
-if (_pl isKindOf "VirtualSpectator_F") exitWith {};
+private _uid = _plid getUserInfo 2;
 
-private _uid = getPlayerUID _pl;
-
-if (isNull _pl || {_uid isEqualTo ""}) exitWith {
-	diag_log "Domination ATTENTION!!!!!! A player connected as null object or with an empty UID";
+if (_uid isEqualTo "") exitWith {
+	diag_log "Domination ATTENTION!!!!!! A player connected with an empty UID";
 	diag_log ["_this", _this];
 	diag_log "This means the player has not connected properly, resulting in a no unit message!!!!!";
 	diag_log "This may break scripts!!!!";
@@ -38,23 +53,29 @@ if (isNull _pl || {_uid isEqualTo ""}) exitWith {
 [_pl, 18] call d_fnc_setekmode;
 #endif
 
-private _name = name _pl;
+_pl setVariable ["d_lr_ti", -1];
+
+private _name = _plid getUserInfo 3;
 
 private _p = d_player_hash getOrDefault [_uid, []];
 private _f_c = false;
 private _sidepl = side (group _pl);
 __TRACE_1("","_sidepl")
 if (_p isEqualTo []) then {
-	_p = [time + d_AutoKickTime, time, "", 0, "", _sidepl, _name, 0, [-2, xr_max_lives] select (xr_max_lives != -1), [0, 0], "", [], [], 0, 0, [], 0, 0, getPlayerID _pl];
+	_p = [time + d_AutoKickTime, time, "", 0, "", _sidepl, _name, 0, [-2, xr_max_lives] select (xr_max_lives != -1), [0, 0], "", [], [], 0, 0, [], 0, 0, _plid];
 	d_player_hash set [_uid, _p];
 	_f_c = true;
-	diag_log ["Dom initplayerserver, new player for this session:", _name, "_uid:", _uid, "getPlayerID _pl:", getPlayerID _pl];
+#ifdef __DEBUG__
+	diag_log ["Dom initplayerserver, new player for this session:", _name, "_uid:", _uid, "_plid:", _plid];
+#endif
 	__TRACE_3("Player not found in d_player_hash","_uid","_name","_p")
 } else {
 	__TRACE_1("player store before change","_p")
 	if (_name != _p # 6) then {
 		[22, _name, _p # 6] remoteExecCall ["d_fnc_csidechat", [0, -2] select isDedicated];
+#ifdef __DEBUG__
 		diag_log format [localize "STR_DOM_MISSIONSTRING_942", _name, _p # 6, _uid];
+#endif
 	};
 	if ((_p # 9) # 0 > 0 && {time - ((_p # 9) # 0) > 900}) then {
 		_p set [8, [-2, xr_max_lives] select (xr_max_lives != -1)];
@@ -66,7 +87,7 @@ if (_p isEqualTo []) then {
 	_p set [1, time];
 	_p set [6, _name];
 	_p set [14, 0];
-	_p set [18, getPlayerID _pl];
+	_p set [18, _plid];
 #ifdef __TT__
 	if (_sidepl != _p # 5) then {
 		if ((_p # 9) # 1 > 0 && {time - ((_p # 9) # 1) < 1800}) then {
@@ -84,7 +105,9 @@ if (_p isEqualTo []) then {
 		};
 	};
 #endif
-	diag_log ["Dom initplayerserver, player joins session again:", _name, "_uid:", _uid, "getPlayerID _pl:", getPlayerID _pl];
+#ifdef __DEBUG__
+	diag_log ["Dom initplayerserver, player joins session again:", _name, "_uid:", _uid, "_plid:", _plid];
+#endif
 	__TRACE_1("player store after change","_p")
 };
 
@@ -114,7 +137,9 @@ if (d_database_found) then {
 			};
 		};
 	};
+#ifdef __DEBUG__
 	diag_log ["Dom initplayerserver database playerGetTS result", _dbresult];
+#endif
 
 	__TRACE_1("","_dbresult")
 	if (_dbresult isEqualTo []) then {
@@ -123,11 +148,15 @@ if (d_database_found) then {
 		call {
 			if (d_db_type == 0) exitWith {
 				"extdb3" callExtension format ["1:dom:playerInsert:%1:%2", _uid, _name];
+#ifdef __DEBUG__
 				diag_log ["Dom initplayerserver database extdB3 player Insert", _name];
+#endif
 			};
 			if (d_db_type == 1) exitWith {
 				["playerInsert", [_uid, _name]] call d_fnc_queryconfigasync;
+#ifdef __DEBUG__
 				diag_log ["Dom initplayerserver database InterceptDB player Insert", _name];
+#endif
 			};
 			if (d_db_type == 2) exitWith {
 				private _tmphash = missionProfileNamespace getVariable "d_player_hashmap";
@@ -135,7 +164,9 @@ if (d_database_found) then {
 					_tmphash set [_uid, [_name, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, [], 0, 0]];
 					__TRACE_1("player insert","_tmphash")
 					saveMissionProfileNamespace;
+#ifdef __DEBUG__
 					diag_log ["Dom initplayerserver database missionProfileNamespace player Insert", _name];
+#endif
 				};
 			};
 		};
@@ -144,11 +175,15 @@ if (d_database_found) then {
 		call {
 			if (d_db_type == 0) exitWith {
 				"extdb3" callExtension format ["1:dom:numplayedAdd:%1:%2", _name, _uid];
+#ifdef __DEBUG__
 				diag_log ["Dom initplayerserver database extdB3 updating numplayed:", _name];
+#endif
 			};
 			if (d_db_type == 1) exitWith {
 				["numplayedAdd", [_name, _uid]] call d_fnc_queryconfigasync;
+#ifdef __DEBUG__
 				diag_log ["Dom initplayerserver database InterceptDB updating numplayed", _name];
+#endif
 			};
 			if (d_db_type == 2) exitWith {
 				private _tmphash = missionProfileNamespace getVariable "d_player_hashmap";
@@ -159,7 +194,9 @@ if (d_database_found) then {
 						_tmpar set [10, (_tmpar # 10) + 1];
 						__TRACE_1("num played","_tmpar")
 					};
+#ifdef __DEBUG__
 					diag_log ["Dom initplayerserver database missionProfileNamespace updating numplayed", _name];
+#endif
 				};
 			};
 		};
@@ -201,7 +238,9 @@ if (d_database_found) then {
 				};
 			};
 		};
+#ifdef __DEBUG__
 		diag_log ["Dom initplayerserver database playerGet result", _dbresult];
+#endif
 		__TRACE_1("","_dbresult")
 		if (_dbresult isNotEqualTo []) then {
 			_dbresult params ["_pres"];
@@ -233,6 +272,21 @@ if (d_database_found) then {
 	};
 };
 
+if (!d_database_found) then {
+	[_uid, _pl, _name] spawn {
+		params ["_uid", "_pl", "_name"];
+		scriptName "spawn_init_playerserver3";
+		sleep 1;
+		if (!isNil "d_pl_mt_score_hash") then {
+			if !(_uid in d_pl_mt_score_hash) then {
+				__TRACE_1("adding player to d_pl_mt_score_hash","_uid")
+				__TRACE_3("","score _pl","_pl","_name")
+				d_pl_mt_score_hash set [_uid, [score _pl, _pl, _name]];
+			};
+		};
+	};
+};
+
 if (remoteExecutedOwner isEqualTo 0) exitWith {};
 _p remoteExecCall ["d_fnc_player_stuff", remoteExecutedOwner];
 
@@ -251,9 +305,3 @@ if (d_MissionType != 2) then {
 };
 
 (group _pl) setVariable ["d_pl_gr", true];
-
-if (!isNil "d_pl_mt_score_hash") then {
-	if !((getPlayerUID _pl) in d_pl_mt_score_hash) then {
-		d_pl_mt_score_hash set [getPlayerUID _pl, [score _pl, _pl, name _pl]];
-	};
-};

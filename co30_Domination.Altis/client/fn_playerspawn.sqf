@@ -9,7 +9,6 @@ __TRACE_1("","_rtype")
 
 if (_rtype == 0) then { // player died
 	call d_fnc_save_respawngear;
-	player setVariable ["d_currentvisionmode", currentVisionMode player];
 	if (visibleMap) then {
 		openMap false;
 	};
@@ -106,7 +105,7 @@ if (_rtype == 0) then { // player died
 		} else {
 			call d_fnc_retrieve_respawngear;
 			{
-				if (_x != "") then {
+				if (_x isNotEqualTo "") then {
 					player setOpticsMode [_forEachIndex + 1, _x];
 				};
 			} forEach (player getVariable "d_cur_opm");
@@ -129,12 +128,22 @@ if (_rtype == 0) then { // player died
 	"RadialBlur" ppEffectEnable false;
 
 	if (d_WithRevive == 1) then {
-		deleteVehicle ((_this # 1) # 1);
+		(_this # 1) params ["_newu", "_oldu"];
+		private _cur = getAssignedCuratorLogic _oldu;
+		if !(isNull _cur) then {
+			[_newu, _cur] spawn {
+				scriptName "respawn eh pspawn";
+				params ["_newu", "_cur"];
+				waitUntil {sleep 1; alive _newu};
+				[_newu, _cur] remoteExec ["d_fnc_acurator", 2];
+			};
+		};
+		deleteVehicle _oldu;
 	};
 
 #ifndef __IFA3__
-	if (d_without_nvg == 1 && {player call d_fnc_hasnvgoggles && {sunOrMoon < 0.99 || {player getVariable ["d_currentvisionmode", 0] == 1}}}) then {
-		player action ["NVGoggles",player];
+	if (d_without_nvg == 1 && {player call d_fnc_hasnvgoggles && {player getVariable ["d_currentvisionmode", 0] == 1}}) then {
+		player actionNow ["NVGoggles", player];
 	};
 #endif
 

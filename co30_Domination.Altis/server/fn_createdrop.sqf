@@ -6,12 +6,12 @@ d_para_available = true; publicVariable "d_para_available"; \
 remoteExecCall ["d_fnc_updatesupportrsc", [0, -2] select isDedicated]; \
 deleteVehicleCrew _chopper; \
 deleteVehicle _chopper; \
-{deleteVehicle _x} forEach (_crew select {!isNull _x}); \
+deleteVehicle (_crew select {!isNull _x}); \
 deleteMarker #d_drop_marker
 
 #define __del \
 deleteVehicle _chopper; \
-{deleteVehicle _x} forEach (_crew select {!isNull _x}); \
+deleteVehicle (_crew select {!isNull _x}); \
 deleteMarker #d_drop_marker
 
 #define __exit if (!alive _unit || {!alive _chopper || {!canMove _chopper}}) exitWith {[_crew,_chopper] spawn _delete_chop;_may_exit = true}
@@ -29,7 +29,7 @@ if (_drop_type in d_x_drop_array_custom_types) then {
 		case "dom_tank": {d_sm_tank_own_side};
 		case "dom_tank_special": {d_sm_tank_special_own_side};
 	};
-	if (isNil "_matched_drop_type" || {_matched_drop_type == ""}) exitWith {
+	if (isNil "_matched_drop_type" || {_matched_drop_type isEqualTo ""}) exitWith {
     	diag_log ["unsupported drop type, not defined for this map", _drop_type];
     };
 	_drop_type = _matched_drop_type;

@@ -24,20 +24,21 @@ while {true} do {
 	private _funits = [];
 
 	private _limit_p = call {
+		if (d_limit_airai == 0) exitWith {0};
 		if (_type isEqualTo "AP") exitWith {12};
 		if (_type isEqualTo "HAC") exitWith {10};
 		if (_type isEqualTo "UAV") exitWith {5};
 		3;
 	};
 	__TRACE_1("","_limit_p")
-	#ifndef __DEBUG__
+#ifndef __DEBUG__
 	while {true} do {
 		if (!d_mt_radio_down && {(call d_fnc_PlayersNumber) >= _limit_p && {diag_fps > 15}}) exitWith {
 			__TRACE("spawning airai vehicle")
 		};
 		sleep (5 + random 10);
 		};
-	#endif
+#endif
 
 	while {d_mt_radio_down} do {sleep 6.123};
 	private _pos = call d_fnc_GetRanPointOuterAir;
@@ -307,7 +308,7 @@ _pat_pos set [2, _cur_tgt_pos select 2]
 		};
 		if (_vehicles isEqualTo []) exitWith {
 			__TRACE("_vehicles array IS empty")
-			{deleteVehicle _x} forEach _funits;
+			deleteVehicle _funits;
 			_funits = [];
 			_vehicles = [];
 		};
@@ -323,7 +324,7 @@ _pat_pos set [2, _cur_tgt_pos select 2]
 		sleep 0.1;
 		if (_vehicles isEqualTo []) exitWith {
 			__TRACE("_vehicles array IS empty")
-			{deleteVehicle _x} forEach _funits;
+			deleteVehicle _funits;
 			_funits = [];
 			_vehicles = [];
 		};

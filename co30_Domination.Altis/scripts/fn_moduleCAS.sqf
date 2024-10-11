@@ -81,7 +81,7 @@ if (isClass _cfg) then {
 		private _curpylon = _cfg select _i;
 		private _tweap = getText (configFile>>"CfgMagazines">>getText (_curpylon>>"attachment")>>"pylonWeapon");
 		__TRACE_1("","_tweap")
-		if (_tweap != "") then {
+		if (_tweap isNotEqualTo "") then {
 			_pylweaps pushBackUnique _tweap;
 		};
 	};
@@ -283,7 +283,7 @@ if !(isNull _logico) then {
 //--- Delete plane
 if (canMove _plane) then {
 	deleteVehicle _plane;
-	{deleteVehicle _x} forEach _crew;
+	deleteVehicle _crew;
 	deleteGroup _group;
 } else {
 	[_plane, _crew, _group] spawn {
@@ -291,7 +291,7 @@ if (canMove _plane) then {
 		params ["_plane", "_crew", "_group"];
 		sleep 30;
 		deleteVehicle _plane;
-		{deleteVehicle _x} forEach _crew;
+		deleteVehicle _crew;
 		deleteGroup _group;
 	};
 };

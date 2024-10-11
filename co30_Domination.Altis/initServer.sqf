@@ -22,6 +22,7 @@ if (isNil "d_db_auto_save") then {
 };
 
 if (d_database_found) then {
+	d_top10_db_players_serv = [];
 	diag_log ["DOM initServer.sqf: Reading DB data! World name:", worldname];
 	if (!d_tt_ver) then {
 		__TRACE_1("","worldname")
@@ -185,6 +186,7 @@ if (isDedicated) then {
 	0 spawn {
 		scriptName "spawn_initserver";
 		waitUntil {time > 0};
+		sleep 0.1;
 		enableEnvironment [false, false];
 		diag_log "DOM initServer environment disabled!";
 	};

@@ -160,7 +160,7 @@ class cfgFunctions {
 			addc(jumpover);
 			addc(draw3d_ace);
 			addc(toggle3dm);
-			addc(keydown_dyng);
+			addc(kd_dyng);
 			addc(keyup_dyng);
 			addc(ropekeyb);
 			addc(handledamageai);
@@ -224,6 +224,7 @@ class cfgFunctions {
 			addc(ac_ai_check);
 			addc(showmtbest);
 			addc(sideorsyschat);
+			addc(visionmodechanged);
 		};
 		class Dom_UI {
 			file = "clientui";
@@ -342,7 +343,6 @@ class cfgFunctions {
 			addc(checkveckillopfor);
 			addc(create_route);
 			addc(setposagls);
-			addc(isplayer);
 			addc(eachframeadd);
 			addc(eachframerun);
 			addc(eachframeremove);
@@ -699,6 +699,12 @@ class cfgFunctions {
 			addc(killedanimal);
 			addc(spe_illum);
 			addc(delobju);
+			addc(entitycreated);
+			addc(disglobalsim);
+			addc(uavcreated);
+			addc(acurator);
+			addc(entityrespawned);
+			addc(dynsimcheck);
 		};
 		class Dom_PrePostInit {
 			file = "init";

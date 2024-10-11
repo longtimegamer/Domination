@@ -5,7 +5,7 @@
 if (!hasInterface) exitWith {};
 
 __TRACE_1("","d_beam_target")
-if (d_beam_target == "") exitWith {
+if (d_beam_target isEqualTo "") exitWith {
 	__TRACE("exit, beam target empty")
 };
 
@@ -17,11 +17,11 @@ __TRACE("black out")
 player setVariable ["xr_hasusedmapclickspawn", true];
 
 if (d_beam_target == "D_BASE_D") then {
-	if (!d_tt_ver) then {
-		_respawn_pos = markerPos "base_spawn_1";
-	} else {
-		_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
-	};
+#ifndef __TT__
+	_respawn_pos = markerPos "base_spawn_1";
+#else
+	_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
+#endif
 	if (!d_carrier) then {
 		_respawn_pos set [2, 0];
 	} else {
@@ -45,19 +45,21 @@ if (d_beam_target == "D_BASE_D") then {
 			} forEach (units player);
 		};
 		
-		__TRACE_1("3","_respawn_target")
 		// failed to find a respawn target
-		if (isNil "_respawn_target") exitWith {};
+		if (isNil "_respawn_target") exitWith {
+			__TRACE("_respawn_target is nil")
+		};
+		__TRACE_1("3","_respawn_target")
 		
 		_respawn_pos = [(vehicle _respawn_target) modelToWorldVisual [0, -8, 0], getPosASL _respawn_target] select (isNull objectParent _respawn_target);
 		_respawn_pos set [2, _respawn_target distance (getPos _respawn_target)];
 		
 		if (_respawn_pos distance2D [0, 0, 0] < 30) then {
-			if (!d_tt_ver) then {
-				_respawn_pos = markerPos "base_spawn_1";
-			} else {
-				_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
-			};
+#ifndef __TT__
+			_respawn_pos = markerPos "base_spawn_1";
+#else
+			_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
+#endif
 			if (!d_carrier) then {
 				_respawn_pos set [2, 0];
 			} else {
@@ -68,11 +70,11 @@ if (d_beam_target == "D_BASE_D") then {
 			if (d_with_ranked || {d_database_found}) then {
 				[_respawn_target, 12] remoteExecCall ["d_fnc_addscore", 2];
 			};
-			if (!d_tt_ver) then {
-				d_player_in_base = _respawn_pos inArea d_base_array;
-			} else {
-				d_player_in_base = _respawn_pos inArea (d_base_array # 0) || {player inArea (d_base_array # 1)};
-			};
+#ifndef __TT__
+			d_player_in_base = _respawn_pos inArea d_base_array;
+#else
+			d_player_in_base = _respawn_pos inArea (d_base_array # 0) || {player inArea (d_base_array # 1)};
+#endif
 		};
 	} else {
 		private _uidx = d_add_resp_points_uni find d_beam_target;
@@ -97,11 +99,11 @@ if (d_beam_target == "D_BASE_D") then {
 				};
 				d_player_in_base = false;
 			} else {
-				if (!d_tt_ver) then {
-					_respawn_pos = markerPos "base_spawn_1";
-				} else {
-					_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
-				};
+#ifndef __TT__
+				_respawn_pos = markerPos "base_spawn_1";
+#else
+				_respawn_pos = [markerPos "base_spawn_2", markerPos "base_spawn_1"] select (d_player_side == blufor);
+#endif
 				if (!d_carrier) then {
 					_respawn_pos set [2, 0];
 				} else {
@@ -136,10 +138,10 @@ if (d_beam_target != "D_BASE_D" && {d_beam_target != "D_SQL_D" && {!(d_beam_targ
 		_mhqobj = _rpnetts # _fidx;
 	};
 };
-[player, 105] remoteExecCall ["xr_fnc_handlenet"];
 __TRACE_1("","_mhqobj")
 if (!isNull _mhqobj) then {
 	if !(_mhqobj isKindOf "Ship") then {
+		[player, 105] remoteExecCall ["xr_fnc_handlenet"];
 		private _newppos = _mhqobj call d_fnc_posbehindvec;
 		(boundingBoxReal _mhqobj) params ["_p1", "_p2"];
 		private _maxHeight = abs ((_p2 # 2) - (_p1 # 2)) / 2;
@@ -147,6 +149,7 @@ if (!isNull _mhqobj) then {
 		player setDir (getDirVisual _mhqobj);
 		player setVehiclePosition [_newppos, [], 0, "NONE"]; // CAN_COLLIDE ?
 	} else {
+		player switchMove "";
 		player moveInCargo _mhqobj;
 	};
 	{player reveal _x} forEach ((player nearEntities [["Man", "Air", "Car", "Motorcycle", "Tank", "Ship"], 30]) + (player nearSupplies 30));
@@ -164,6 +167,7 @@ if (!isNull _mhqobj) then {
 		};
 	};
 	if (!_domovevec) then {
+		[player, 105] remoteExecCall ["xr_fnc_handlenet"];
 		player allowDamage false;
 		if (surfaceIsWater _respawn_pos) then {
 			__TRACE("is water")
@@ -184,6 +188,7 @@ if (!isNull _mhqobj) then {
 		};
 		player allowDamage true;
 	} else {
+		player switchMove "";
 		player moveInCargo (vehicle _respawn_target);
 	};
 };
@@ -213,8 +218,8 @@ if (d_database_found) then {
 
 0 spawn {
 	scriptName "spawn_buttonclickrespawn2";
-	if (!d_ifa3 && {!d_spe && {d_without_nvg == 1 && {player call d_fnc_hasnvgoggles && {sunOrMoon < 0.99 || {player getVariable ["d_currentvisionmode", 0] == 1}}}}}) then {
-		player action ["NVGoggles", player];
+	if (!d_ifa3 && {!d_spe && {d_without_nvg == 1 && {player call d_fnc_hasnvgoggles && {player getVariable ["d_currentvisionmode", 0] == 1}}}}) then {
+		player actionNow ["NVGoggles", player];
 	};
 };
 __TRACE("MapClickRespawn done")

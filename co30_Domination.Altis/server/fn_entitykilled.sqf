@@ -6,16 +6,16 @@ __TRACE_1("","_this")
 
 params ["_obj"];
 
-private _isman = false;
-
-if (_obj isKindOf "CAManBase") then {
-	_isman = true;
+private _isman = if (_obj getEntityInfo 0) then {
 	if (_obj getHitIndex 2 == 1 || {_obj getHitIndex 0 == 1}) then {
 		private _insti = _this # 2;
-		if (!isNull _insti && {isNull objectParent _insti && {isPlayer _insti}}) then {
-			[_insti, _insti distance2D _obj] spawn d_fnc_addheadshot;
+		if (!isNull _insti && {isNull objectParent _insti && {isPlayer [_insti]}}) then {
+			[_insti, _obj] spawn d_fnc_addheadshot;
 		};
 	};
+	true
+} else {
+	false
 };
 
 private _ar = _obj getVariable "d_hkx";
@@ -66,7 +66,7 @@ if (!isNil "d_is_hc") exitWith {true};
 #endif
 
 if !(_isman) then {
-	if (isPlayer (_this # 2)) then {
+	if (isPlayer [_this # 2]) then {
 		_this spawn d_fnc_bv_check;
 	};
 };
@@ -114,7 +114,7 @@ if (_ar # 16 == 1) then {
 };
 
 if (_ar # 5 == 1 && { d_ai_persistent_corpses != 0 }) then {
-	call d_fnc_handleDeadVec;
+	_obj spawn d_fnc_handleDeadVec;
 };
 
 if (_ar # 6 == 1) then {
@@ -127,9 +127,7 @@ if (_ar # 7 == 1) then {
 	if (!isNil "_cr") then {
 		_cr = _cr - [objNull];
 		if (_cr isNotEqualTo []) then {
-			{
-				deleteVehicle _x;
-			} forEach _cr;
+			deleteVehicle _cr;
 		};
 	};
 };

@@ -19,7 +19,7 @@ if (_val isNotEqualTo []) then {
 			private _content = (_x # 0) getVariable ["d_objcont", []];
 			__TRACE_1("","_content")
 			if (_content isNotEqualTo []) then {
-				{deleteVehicle _x} forEach _content;
+				deleteVehicle _content;
 			};
 			
 			if ((_x # 0) isKindOf d_mash) then {
@@ -60,24 +60,22 @@ if (_val isNotEqualTo []) then {
 _val = d_placed_objs_hash3 getOrDefault [_uid, []];
 if (_val isNotEqualTo []) then {
 	__TRACE_1("3","_val")
-	{
-		deleteVehicle _x;
-	} forEach (_val select {!isNull _x});
+	deleteVehicle (_val select {!isNull _x});
 	d_placed_objs_hash3 deleteAt _uid;
 };
 
 _val = d_placed_objs_hash4 getOrDefault [_uid, []];
 if (_val isNotEqualTo []) then {
 	__TRACE_1("4","_val")
-	{
-		deleteVehicle _x;
-	} forEach (_val select {!isNull _x});
+	deleteVehicle (_val select {!isNull _x});
 	d_placed_objs_hash4 deleteAt _uid;
 };
 
-private _searchfor = "_USER_DEFINED #" + _id + "/";
-__TRACE_1("","_searchfor")
+#ifdef __DEBUG__
+private _hhelo = allMapMarkers select {_x find _id > -1};
+__TRACE_1("","_hhelo")
+#endif
 {
 	deleteMarker _x;
 	sleep 0.01;
-} forEach (allMapMarkers select {_x find _searchfor > -1});
+} forEach (allMapMarkers select {_x find _id > -1});

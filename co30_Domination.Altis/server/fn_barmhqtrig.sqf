@@ -34,7 +34,7 @@ while {true} do {
 				__TRACE_1("","_mt_done")
 				if (!_mt_done) then {
 					d_num_barracks_objs = d_num_barracks_objs - 1;
-					d_groups_respawn_time_add = d_groups_respawn_time_add + 10 + (random 8);
+					d_groups_respawn_time_add = d_groups_respawn_time_add + 15 + (random 8);
 					publicVariable "d_num_barracks_objs";
 					__TRACE_1("","d_num_barracks_objs")
 				};
@@ -58,7 +58,7 @@ while {true} do {
 				};
 				if (!_mt_done) then {
 					{
-						if (_x call d_fnc_isplayer) then {
+						if (isPlayer [_x]) then {
 							[_x, 1] call d_fnc_addScore;
 #ifdef __TT__
 							[d_tt_points # 2, _x, false] call d_fnc_AddPoints;
@@ -102,7 +102,7 @@ while {true} do {
 				};
 				if (!_mt_done) then {
 					{
-						if (_x call d_fnc_isplayer) then {
+						if (isPlayer [_x]) then {
 							[_x, 2] call d_fnc_addScore;
 						};
 					} forEach list _trig;

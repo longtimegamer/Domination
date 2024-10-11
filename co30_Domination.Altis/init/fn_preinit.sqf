@@ -594,6 +594,7 @@ d_vec_camo_net =
 d_sm_winner = 0;
 d_objectID1 = objNull;
 d_objectID2 = objNull;
+d_nump_h_ar = [-1, -1];
 
 // no farps in A3 so we fake them
 // first entry should always be a helipad because the trigger which is needed to make it work is spawned there
@@ -701,7 +702,7 @@ d_island_x_max = _confmapsize;
 d_island_y_max = _confmapsize;
 
 private _wname = toLowerANSI worldName;
-d_iscup_island = _wname in ["chernarus_summer", "chernarus_winter", "chernarus", "eden", "abel", "noe", "sara", "takistan", "sara_dbe1", "zargabad"] || {(_wname select [0, 4]) isEqualTo "cup_"};
+d_iscup_island = _wname in ["chernarus_summer", "chernarus_winter", "chernarus", "eden", "abel", "noe", "sara", "takistan", "sara_dbe1", "zargabad"] || {_wname find "cup_" == 0};
 
 if (isServer) then {
 	d_player_hash = createHashMap;
@@ -725,6 +726,8 @@ if (isServer) then {
 	d_delete_marker_meh = [];
 	
 	d_last_admin_mt_end = -1;
+	
+	d_cleaner_array = [];
 
 	if (isMultiplayer) then {
 		if (isClass (configFile >> "Intercept" >> "Dedmen" >> "intercept_database")) then {
@@ -1629,7 +1632,7 @@ d_arti_observer_W = [["B_recon_JTAC_F"]];
 		"O_Heli_Light_02_unarmed_F";
 #endif
 
-	if (d_drop_aircraft == "") then {
+	if (d_drop_aircraft isEqualTo "") then {
 		d_drop_aircraft_avail = false;
 		publicVariable "d_drop_aircraft_avail";
 	};
@@ -1697,7 +1700,7 @@ d_arti_observer_W = [["B_recon_JTAC_F"]];
 #endif
 
 #ifndef __TT__
-	if (d_cas_plane == "") then {
+	if (d_cas_plane isEqualTo "") then {
 #else
 	if (d_cas_plane isEqualTo []) then {
 #endif
@@ -2364,7 +2367,7 @@ if (d_with_airdrop == 2) then {
 		if (d_enemy_side_short == "W") exitWith {
 			call {
 				if (d_cup) exitWith {
-					["CUP_B_USMC_DYN_MQ9"]
+					["B_UAV_02_F"]
 				};
 				if (d_ifa3) exitWith {
 					[]
@@ -2905,83 +2908,85 @@ if (d_with_airdrop == 2) then {
 	
 	d_chem_objs_ar = [];
 
-	//
-	//civilian vehicles
-	//
-	d_civVehiclesWeightedCityWealthHigh = [
-		"C_Offroad_01_F", 1,
-		"C_Hatchback_01_F", 1,
-		"C_Truck_02_covered_F", 0.25,
-		"C_Van_01_box_F", 0.25,
-		"C_Van_02_transport_F", 0.25,
-		"C_Offroad_02_unarmed_F", 0.5,
-		"C_SUV_01_F", 0.5,
-		"C_IDAP_Van_medevac_02_F", 0.25
-	];
+	if (d_enable_civs == 1) then {
+		//
+		//civilian vehicles
+		//
+		d_civVehiclesWeightedCityWealthHigh = [
+			"C_Offroad_01_F", 1,
+			"C_Hatchback_01_F", 1,
+			"C_Truck_02_covered_F", 0.25,
+			"C_Van_01_box_F", 0.25,
+			"C_Van_02_transport_F", 0.25,
+			"C_Offroad_02_unarmed_F", 0.5,
+			"C_SUV_01_F", 0.5,
+			"C_IDAP_Van_medevac_02_F", 0.25
+		];
 
-	d_civVehiclesWeightedCityWealthLow = [
-		"C_Offroad_01_F", 1,
-		"C_Truck_02_covered_F", 0.25,
-		"C_Truck_02_transport_F", 0.25,
-		"C_Van_01_box_F", 0.25,
-		"C_Van_02_transport_F", 0.25,
-		"C_IDAP_Van_medevac_02_F", 0.25
-	];
+		d_civVehiclesWeightedCityWealthLow = [
+			"C_Offroad_01_F", 1,
+			"C_Truck_02_covered_F", 0.25,
+			"C_Truck_02_transport_F", 0.25,
+			"C_Van_01_box_F", 0.25,
+			"C_Van_02_transport_F", 0.25,
+			"C_IDAP_Van_medevac_02_F", 0.25
+		];
 
-	d_civVehiclesWeightedRural = [
-		"C_Offroad_01_F", 1,
-		"C_Truck_02_covered_F", 0.25,
-		"C_Truck_02_transport_F", 0.25,
-		"C_Van_01_box_F", 0.10,
-		"C_Offroad_02_unarmed_F", 1,
-		"C_Tractor_01_F", 0.10,
-		"C_van_01_box_f", 0.10,
-		"C_Truck_02_fuel_f", 0.10,
-		"C_idap_truck_02_water_f", 0.10,
-		"C_van_01_transport_f", 0.25
-	];
+		d_civVehiclesWeightedRural = [
+			"C_Offroad_01_F", 1,
+			"C_Truck_02_covered_F", 0.25,
+			"C_Truck_02_transport_F", 0.25,
+			"C_Van_01_box_F", 0.10,
+			"C_Offroad_02_unarmed_F", 1,
+			"C_Tractor_01_F", 0.10,
+			"C_van_01_box_f", 0.10,
+			"C_Truck_02_fuel_f", 0.10,
+			"C_idap_truck_02_water_f", 0.10,
+			"C_van_01_transport_f", 0.25
+		];
 
-	d_civVehiclesWeightedRuralCup = [
-		"CUP_C_pickup_unarmed_civ", 1,
-		"CUP_C_Datsun", 1,
-		"CUP_C_V3S_Covered_TKC", 1,
-		"CUP_B_hilux_unarmed_blu_g_f", 1,
-		"CUP_I_suv_ion", 0.25,
-		"C_Tractor_01_F", 0.10,
-		"CUP_C_tractor_old_civ", 0.10
-	];
+		d_civVehiclesWeightedRuralCup = [
+			"CUP_C_pickup_unarmed_civ", 1,
+			"CUP_C_Datsun", 1,
+			"CUP_C_V3S_Covered_TKC", 1,
+			"CUP_B_hilux_unarmed_blu_g_f", 1,
+			"CUP_I_suv_ion", 0.25,
+			"C_Tractor_01_F", 0.10,
+			"CUP_C_tractor_old_civ", 0.10
+		];
 
-	d_civVehiclesWeightedRuralCupRemote = [
-		"CUP_C_Datsun", 1,
-		"CUP_C_Datsun_4seat", 1,
-		"CUP_C_V3S_Covered_TKC", 0.5,
-		"C_Tractor_01_F", 0.25
-	];
-	
-	d_civVehiclesWeightedCityWealthLowCup =+ d_civVehiclesWeightedCityWealthLow;
-	d_civVehiclesWeightedCityWealthLowCup =+ [
-		"CUP_C_lada_white_civ", 1,
-		"CUP_C_lada_red_civ", 1,
-		"CUP_C_skoda_white_civ", 1,
-		"CUP_C_skoda_green_civ", 1,
-		"CUP_C_skoda_blue_civ", 1,
-		"CUP_C_skoda_red_civ", 1,
-		"CUP_C_ikarus_chernarus", 0.25,
-		"CUP_C_bus_city_crciv", 0.25,
-		"CUP_B_S1203_Ambulance_CR", 0.25
-	];
-	
-	d_civVehiclesWeightedCityWealthLowCFP =+ d_civVehiclesWeightedCityWealthLowCup;
-	d_civVehiclesWeightedCityWealthLowCFP =+ [
-		"CFP_c_me_datsun_pickup_covered_01", 1,
-		"CFP_C_datsun_plain", 1,
-		"CFP_C_afg_skoda_105_L_01", 1,
-		"CFP_C_asia_praga_v3s_01", 1,
-		"CFP_B_caf_ural_01", 1,
-		"CFP_I_ssarmy_skoda_1203_01", 1,
-		"CFP_B_afgpolice_offroad_01", 0.25,
-		"CFP_B_uaz_01", 1
-	];
+		d_civVehiclesWeightedRuralCupRemote = [
+			"CUP_C_Datsun", 1,
+			"CUP_C_Datsun_4seat", 1,
+			"CUP_C_V3S_Covered_TKC", 0.5,
+			"C_Tractor_01_F", 0.25
+		];
+		
+		d_civVehiclesWeightedCityWealthLowCup =+ d_civVehiclesWeightedCityWealthLow;
+		d_civVehiclesWeightedCityWealthLowCup =+ [
+			"CUP_C_lada_white_civ", 1,
+			"CUP_C_lada_red_civ", 1,
+			"CUP_C_skoda_white_civ", 1,
+			"CUP_C_skoda_green_civ", 1,
+			"CUP_C_skoda_blue_civ", 1,
+			"CUP_C_skoda_red_civ", 1,
+			"CUP_C_ikarus_chernarus", 0.25,
+			"CUP_C_bus_city_crciv", 0.25,
+			"CUP_B_S1203_Ambulance_CR", 0.25
+		];
+		
+		d_civVehiclesWeightedCityWealthLowCFP =+ d_civVehiclesWeightedCityWealthLowCup;
+		d_civVehiclesWeightedCityWealthLowCFP =+ [
+			"CFP_c_me_datsun_pickup_covered_01", 1,
+			"CFP_C_datsun_plain", 1,
+			"CFP_C_afg_skoda_105_L_01", 1,
+			"CFP_C_asia_praga_v3s_01", 1,
+			"CFP_B_caf_ural_01", 1,
+			"CFP_I_ssarmy_skoda_1203_01", 1,
+			"CFP_B_afgpolice_offroad_01", 0.25,
+			"CFP_B_uaz_01", 1
+		];
+	};
 
 	private _civVehiclesWeightedRuralLivonia = [
 		"C_Offroad_01_F", 0.30,
@@ -3615,8 +3620,19 @@ if (hasInterface) then {
 #endif
 
 #ifdef __OWN_SIDE_BLUFOR__
-	d_UAV_Small = "B_UAV_01_F";
-	d_UAV_CAS = "B_UAV_02_F";
+	d_UAV_Small = call {
+		if (d_cup) exitWith {
+			"CUP_B_AH6X_USA"
+		};
+		"B_UAV_01_F";
+	};
+	
+	d_UAV_CAS = call {
+		if (d_cup) exitWith {
+			"B_UAV_02_F"
+		};
+		"B_UAV_02_F";
+	};
 	d_UAV_Terminal = "B_UavTerminal";
 #endif
 #ifdef __OWN_SIDE_OPFOR__
@@ -3835,8 +3851,8 @@ if (hasInterface) then {
 		[], // PRIMARYWEAPON
 		[], // SECONDARYWEAPON
 		[], // HANDGUN
-		[{getText (configFile>>"CfgWeapons">>_this>>"ItemInfo">>"containerClass") == "Supply500"}, {d_player_side == blufor && {_this in ["u_o_v_soldier_viper_f", "u_o_v_soldier_viper_hex_f"]}}, {_this select [0, 4] == "u_c_" || {_this select [0, 6] == "u_i_c_"}}, "U_OrestesBody", "U_Marshal", "U_Rangemaster", "U_Competitor", {"paradeuniform" in _this}], // uniforms
-		[{_this isKindOf ["V_DeckCrew_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["V_EOD_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["V_Safety_base_F", configFile >> "CfgWeapons"]}, "V_Press_F", {_this select [0, 7] == "v_plain"}], // VEST
+		[{getText (configFile>>"CfgWeapons">>_this>>"ItemInfo">>"containerClass") == "Supply500"}, {d_player_side == blufor && {_this in ["u_o_v_soldier_viper_f", "u_o_v_soldier_viper_hex_f"]}}, {_this find "u_c_" == 0 || {_this find "u_i_c_" == 0}}, "U_OrestesBody", "U_Marshal", "U_Rangemaster", "U_Competitor", {"paradeuniform" in _this}], // uniforms
+		[{_this isKindOf ["V_DeckCrew_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["V_EOD_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["V_Safety_base_F", configFile >> "CfgWeapons"]}, "V_Press_F", {_this find "v_plain" == 0}], // VEST
 		[{_this isKindOf "B_HMG_01_weapon_F"}, {_this isKindOf "B_HMG_01_support_F"}, {_this isKindOf "B_HMG_02_support_F"}, {_this select [1, 15] == "_AA_01_weapon_F"}, {_this select [1, 15] == "_AT_01_weapon_F"}, {getText (configFile>>"CfgVehicles">>_this>>"vehicleclass") == "Respawn"}, {"uav_" in _this || {"ugv_" in _this}}, {_this select [1, 11] == "_messenger_"}, {"_everyday_" in _this}, {"_sport_" in _this}], // BACKPACK
 		[{d_player_side == blufor && {_this == "H_HelmetO_ViperSP_ghex_F" || {_this == "H_HelmetO_ViperSP_hex_F"}}}, {_this isKindOf ["H_Hat_blue", configFile >> "CfgWeapons"]}, {_this isKindOf ["H_HeadBandage_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["H_RacingHelmet_1_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["H_Construction_headset_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["H_Construction_earprot_base_F", configFile >> "CfgWeapons"]}, {_this isKindOf ["H_Construction_basic_base_F", configFile >> "CfgWeapons"]}, {"paradedresscap" in _this}], // HEADGEAR
 		[], // GOGGLES
@@ -3862,7 +3878,7 @@ if (hasInterface) then {
 	];
 
 #ifdef __CUP__
-	(d_remove_from_arsenal # 4) append [{_this select [0, 15] == "CUP_V_B_LHDVest"}];
+	(d_remove_from_arsenal # 4) append [{_this find "CUP_V_B_LHDVest" == 0}];
 #endif
 #ifdef __GMCWG__
 	(d_remove_from_arsenal # 1) pushBack "gm_p2a1_launcher_blk";

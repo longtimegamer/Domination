@@ -38,6 +38,15 @@ _this spawn {
 		_norm_resp = true;
 		_old call xr_fnc_CheckRespawn;
 	};
+	private _cur = getAssignedCuratorLogic _old;
+	if !(isNull _cur) then {
+		[_this # 0, _cur] spawn {
+			scriptName "xr respawn eh curator";
+			params ["_newu", "_cur"];
+			waitUntil {sleep 1; alive _newu};
+			[_newu, _cur] remoteExec ["d_fnc_acurator", 2];
+		};
+	};
 	deleteVehicle _old;
 	//__TRACE_1("","_norm_resp")
 	private _d_pos = xr_death_pos;

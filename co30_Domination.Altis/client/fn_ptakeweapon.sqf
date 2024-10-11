@@ -23,7 +23,7 @@ _eee = _obj isKindOf "WeaponHolderSimulated";
 __TRACE_2("","_eee","typeOf _obj")
 #endif
 
-if (!isNull _obj && {_obj isKindOf "CAManBase" || {_obj isKindOf "WeaponHolderSimulated"}}) exitWith {
+if (!isNull _obj && {_obj getEntityInfo 0 || {_obj isKindOf "WeaponHolderSimulated"}}) exitWith {
 	__TRACE_1("","_obj")
 };
 
@@ -53,7 +53,7 @@ if (!_isvalid) then {
 		private _secits = player getVariable "d_pprimweapitems";
 		if (primaryWeaponItems player isNotEqualTo _secits) then {
 			removeAllPrimaryWeaponItems player;
-			{player addPrimaryWeaponItem _x} forEach (_secits select {_x != ""});
+			{player addPrimaryWeaponItem _x} forEach (_secits select {_x isNotEqualTo ""});
 		};
 		
 		_exit_it = true;
@@ -69,7 +69,7 @@ if (!_isvalid) then {
 				{
 					player removeSecondaryWeaponItem _x;
 				} forEach (secondaryWeaponItems player);
-				{player addSecondaryWeaponItem _x} forEach (_secits select {_x != ""});
+				{player addSecondaryWeaponItem _x} forEach (_secits select {_x isNotEqualTo ""});
 			};
 			
 			_exit_it = true;
@@ -82,7 +82,7 @@ if (!_isvalid) then {
 				private _secits = player getVariable "d_phandgweapitems";
 				if (handgunItems player isNotEqualTo _secits) then {
 					removeAllHandgunItems player;
-					{player addHandgunItem _x} forEach (_secits select {_x != ""});
+					{player addHandgunItem _x} forEach (_secits select {_x isNotEqualTo ""});
 				};
 				
 				_exit_it = true;

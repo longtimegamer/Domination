@@ -9,7 +9,7 @@ if (player getVariable ["d_isinaction", false]) exitWith {
 };
 
 if (player distance2D d_FLAG_BASE < 30) exitWith {
-	systemChat (localize "STR_DOM_MISSIONSTRING_246");
+	systemChat (localize "STR_DOM_MISSIONSTRING_246_a");
 	d_commandingMenuIniting = false;
 };
 
@@ -74,7 +74,7 @@ private _farptrig = [
 ["ANY", "PRESENT", true],
 ["[thislist, thisTrigger] call d_fnc_tallservice", "0 = [thisTrigger getVariable 'd_list'] spawn d_fnc_reload", ""]
 ] call d_fnc_CreateTrigger;
-_farptrig setTriggerInterval 1;
+_farptrig setTriggerInterval 1.2;
 
 private _farpcont = [_farptrig];
 
@@ -139,7 +139,7 @@ _farp_seco addAction [format ["<t color='#FF0000'>%1</t>", localize "STR_DOM_MIS
 
 		private _farpcont = _farp getVariable ["d_objcont", []];
 		if (_farpcont isNotEqualTo []) then {
-			{deleteVehicle _x} forEach _farpcont;
+			deleteVehicle _farpcont;
 		};
 		deleteVehicle _farp;
 

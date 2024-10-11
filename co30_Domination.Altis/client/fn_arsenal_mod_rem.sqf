@@ -17,9 +17,9 @@ private _findmodfnc = {
 		__TRACE_1("_findmodfnc","count _x")
 		__TRACE_1("_findmodfnc","count _csallow")
 		_ret = if (count _x >= count _csallow) then {
-			(_x select [0, count _csallow]) isEqualTo _csallow
+			_x find _csallow == 0
 		} else {
-			(_csallow select [0, count _x]) isEqualTo _x
+			_csallow find _x == 0
 		};
 		if (_ret) then {
 			_res = 1;
@@ -52,7 +52,7 @@ private _findmodfnc = {
 		};
 		__TRACE_1("","_kind")
 		__TRACE_1("","configSourceAddonList (configFile >> _kind >> _x)")
-		if (_kind != "" && {([configSourceAddonList (configFile >> _kind >> _x)] call _findmodfnc) != -1}) then {
+		if (_kind isNotEqualTo "" && {([configSourceAddonList (configFile >> _kind >> _x)] call _findmodfnc) != -1}) then {
 			__TRACE_1("","_ar select _forEachIndex")
 			_ar set [_forEachIndex, -1];
 		};

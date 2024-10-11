@@ -43,7 +43,7 @@ sleep _deltime;
 			deleteVehicle _x;
 		} else {
 			if (_x isKindOf "LandVehicle" && {(crew _x) isNotEqualTo []}) then {
-				if ({(_x call d_fnc_isplayer) && {alive _x}} count (crew _x) == 0) then {
+				if ({alive _x && {isPlayer _x}} count (crew _x) == 0) then {
 					_x call d_fnc_DelVecAndCrew;
 				};
 			} else {
@@ -53,7 +53,7 @@ sleep _deltime;
 	};
 } forEach d_x_sm_vec_rem_ar;
 d_x_sm_vec_rem_ar = [];
-{deleteVehicle _x} forEach (d_x_sm_rem_ar select {!isNull _x});
+deleteVehicle (d_x_sm_rem_ar select {!isNull _x});
 d_x_sm_rem_ar = [];
 
 sleep _waittime;

@@ -43,7 +43,7 @@ if (side (group player) == blufor) then {
 		} forEach (allMapMarkers select {_x select [0, 9] == "d_bm_opf_" || {_x select [0, 9] == "d_ab_opf_" || {_x select [0, 10] == "d_abm_opf_" || {_x select [0, 9] == "d_Mash_opf" || {_x select [0, 9] == "d_FARP_opf" || {_x select [0, 12] == "xr_opf_dead_"}}}}}});
 		{
 			(_x splitString "|") params ["", "_netid_ar"];
-			if (_netid_ar != "") then {
+			if (_netid_ar isNotEqualTo "") then {
 				private _obj = objectFromNetId _netid_ar;
 				if (side (group _obj) != d_player_side) then {
 					deleteMarkerLocal _x;
@@ -73,7 +73,7 @@ if (side (group player) == blufor) then {
 		} forEach (allMapMarkers select {_x select [0, 9] == "d_bm_blu_" || {_x select [0, 9] == "d_ab_blu_" || {_x select [0, 10] == "d_abm_blu_" || {_x select [0, 9] == "d_Mash_blu" || {_x select [0, 9] == "d_FARP_blu" || {_x select [0, 12] == "xr_blu_dead_"}}}}}});
 		{
 			(_x splitString "|") params ["", "_netid_ar"];
-			if (_netid_ar != "") then {
+			if (_netid_ar isNotEqualTo "") then {
 				private _obj = objectFromNetId _netid_ar;
 				if (side (group _obj) != d_player_side) then {
 					deleteMarkerLocal _x;
@@ -116,7 +116,6 @@ if (!d_with_ace) then {
 	["dom_alive_not_uncon", {call d_fnc_canu2}] call d_fnc_eachframeadd;
 };
 d_player_in_base = true;
-d_player_in_air = false;
 
 d_player_vecs = [];
 
@@ -333,7 +332,9 @@ if (d_MissionType != 2) then {
 			["d_obj00", "Succeeded", false] call d_fnc_taskSetState;
 		};
 #ifndef __TT__
-		call d_fnc_cmakemtgmarker;
+		if (isNil "d_cmakemtgmarker_sqf_running") then {
+			call d_fnc_cmakemtgmarker;
+		};
 #endif
 	};
 };
@@ -354,7 +355,7 @@ if (d_ParaAtBase == 0) then {
 #ifndef __TT__
 if (d_MissionType != 2) then {
 	{
-		if (d_jumpflag_vec == "") then {
+		if (d_jumpflag_vec isEqualTo "") then {
 			_x setVariable ["d_jf_id", _x addAction [format ["<t color='#D64C30' size='1.2'>%1</t>", localize "STR_DOM_MISSIONSTRING_296"], {_this spawn d_fnc_paraj}, 1, 1.5, true, true, "", "true", 10]];
 		} else {
 			_x setVariable ["d_jf_id", _x addAction [format ["<t color='#AAD9EF'>%1</t>", format [localize "STR_DOM_MISSIONSTRING_297", [d_jumpflag_vec, "CfgVehicles"] call d_fnc_GetDisplayName]], {_this spawn d_fnc_bike},[d_jumpflag_vec,1], 1.5, true, true, "", "true", 10]];
@@ -377,6 +378,7 @@ if (d_player_side == blufor) then {
 player addEventHandler ["respawn", {call d_fnc_prespawned}];
 
 player setVariable ["d_currentvisionmode", 0];
+player addEventhandler ["VisionModeChanged", {call d_fnc_visionmodechanged}];
 
 // one entry: [box_object, color as array (R, G, B, Alpha), "Text to show above box"]
 d_all_p_a_boxes = [];
@@ -518,14 +520,14 @@ if (!d_no_ai) then {
 		};
 
 		private _leader = leader (group player);
-		if (!(_leader call d_fnc_isplayer) || {player == _leader}) then {
+		if (!(isPlayer [_leader]) || {player == _leader}) then {
 			{
 				if (isNull objectParent _x) then {
 					deleteVehicle _x;
 				} else {
 					(vehicle _x) deleteVehicleCrew _x;
 				};
-			} forEach ((units player) select {!(_x call d_fnc_isplayer)});
+			} forEach ((units player) select {!(isPlayer [_x])});
 		};
 	};
 
@@ -598,6 +600,9 @@ _respawn_marker setMarkerPosLocal markerPos _base_spawn_m;
 // special triggers for engineers, AI version, everybody can repair and flip vehicles
 if (d_string_player in d_is_engineer || {!d_no_ai}) then {
 	d_eng_can_repfuel = true;
+	if !(player getUnitTrait "engineer") then {
+		player setUnitTrait ["engineer", true];
+	};
 
 	if (d_engineerfull == 0 || {!d_no_ai}) then {
 #ifndef __TT__
@@ -645,7 +650,7 @@ if (d_dis_servicep == 1) then {
 			_farpc params ["_trig"];
 			_trig setTriggerActivation ["ANY", "PRESENT", true];
 			_trig setTriggerStatements ["[thislist, thisTrigger] call d_fnc_tallservice", "0 = [thisTrigger getVariable 'd_list'] spawn d_fnc_reload", ""];
-			_trig setTriggerInterval 1;
+			_trig setTriggerInterval 1.2;
 		};
 	} forEach d_farps;
 };
@@ -737,7 +742,7 @@ if (d_ParaAtBase == 1) then {
 //};
 
 private _primw = primaryWeapon player;
-if (_primw != "") then {
+if (_primw isNotEqualTo "") then {
 	player selectWeapon _primw;
 };
 
@@ -801,7 +806,7 @@ if (d_with_bis_dynamicgroups == 0) then {
 	0 spawn {
 		scriptName "spawn_setupplayer3";
 		waitUntil {!isNil {missionNamespace getVariable "BIS_dynamicGroups_key"}};
-		(findDisplay 46) displayAddEventHandler ["KeyDown", {call d_fnc_keydown_dyng}];
+		(findDisplay 46) displayAddEventHandler ["KeyDown", {call d_fnc_kd_dyng}];
 		(findDisplay 46) displayAddEventHandler ["KeyUp", {call d_fnc_keyup_dyng}];
 	};
 } else {
@@ -842,13 +847,13 @@ if (d_player_side == blufor) then {
 #endif
 if (markerPos "d_runwaymarker" isNotEqualTo [0,0,0]) then {
 	private _msize = markerSize "d_runwaymarker";
-	[[markerPos "d_runwaymarker" # 0, markerPos "d_runwaymarker" # 1, 1.9], [_msize # 0, _msize # 1, markerDir "d_runwaymarker", true, 2], ["ANY", "PRESENT", true], ["(thislist unitsBelowHeight 1) isNotEqualTo []", "'d_runwaymarker' setMarkerColorLocal 'ColorRed'", "'d_runwaymarker' setMarkerColorLocal 'ColorGreen'"]] call d_fnc_createtriggerlocal;
+	[[markerPos "d_runwaymarker" # 0, markerPos "d_runwaymarker" # 1, 15], [_msize # 0, _msize # 1, markerDir "d_runwaymarker", true, 2], ["ANY", "PRESENT", true], ["(thislist unitsBelowHeight 1) isNotEqualTo []", "'d_runwaymarker' setMarkerColorLocal 'ColorRed'", "'d_runwaymarker' setMarkerColorLocal 'ColorGreen'"]] call d_fnc_createtriggerlocal;
 };
 #ifdef __TT__
 };
 if (d_player_side == opfor && {markerPos "d_runwaymarker_o" isNotEqualTo [0,0,0]}) then {
 	private _msize = markerSize "d_runwaymarker_o";
-	[[markerPos "d_runwaymarker_o" # 0, markerPos "d_runwaymarker_o" # 1, 1.9], [_msize # 0, _msize # 1, markerDir "d_runwaymarker_o", true, 2], ["ANY", "PRESENT", true], ["(thislist unitsBelowHeight 1) isNotEqualTo []", "'d_runwaymarker_o' setMarkerColorLocal 'ColorRed'", "'d_runwaymarker_o' setMarkerColorLocal 'ColorGreen'"]] call d_fnc_createtriggerlocal;
+	[[markerPos "d_runwaymarker_o" # 0, markerPos "d_runwaymarker_o" # 1, 15], [_msize # 0, _msize # 1, markerDir "d_runwaymarker_o", true, 2], ["ANY", "PRESENT", true], ["(thislist unitsBelowHeight 1) isNotEqualTo []", "'d_runwaymarker_o' setMarkerColorLocal 'ColorRed'", "'d_runwaymarker_o' setMarkerColorLocal 'ColorGreen'"]] call d_fnc_createtriggerlocal;
 };
 #endif
 
@@ -868,27 +873,27 @@ if (d_without_nvg == 1 && {!d_gmcwg && {!d_unsung && {!d_vn && {!d_spe && {!(pla
 private _bino = binocular player;
 call {
 	if (d_gmcwg) exitWith {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			player addWeapon "gm_ferod16_oli";
 		};
 	};
 	if (d_unsung) exitWith {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			player addWeapon "uns_binocular_army";
 		};
 	};
 	if (d_vn) exitWith {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			player addWeapon "vn_mk21_binocs";
 		};
 	};
 	if (d_csla) exitWith {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			player addWeapon "CSLA_bino";
 		};
 	};
 	if (d_spe) exitWith {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			if (d_player_side == west) then {
 				player addWeapon "SPE_Binocular_GER";
 			} else {
@@ -899,7 +904,7 @@ call {
 	};
 	if ((d_disable_player_arty == 0 && {d_string_player in d_can_use_artillery || {d_string_player in d_can_mark_artillery}}) || {d_string_player in d_can_call_cas}) then {
 		if (!d_with_ranked && {_bino != "LaserDesignator"}) then {
-			if (_bino != "") then {
+			if (_bino isNotEqualTo "") then {
 				player removeWeapon _bino;
 			};
 			player addWeapon "LaserDesignator";
@@ -908,7 +913,7 @@ call {
 			player addMagazine ["Laserbatteries", 1];
 		};
 	} else {
-		if (_bino == "") then {
+		if (_bino isEqualTo "") then {
 			player addWeapon "Binocular";
 		};
 	};
@@ -921,7 +926,7 @@ if !("ItemRadio" in assigneditems player) then {player linkItem "ItemRadio"};
 #endif
 
 private _unip = uniform player;
-if (_unip != "") then {
+if (_unip isNotEqualTo "") then {
 	if (getText (configFile>>"CfgWeapons">>_unip>>"ItemInfo">>"containerClass") == "Supply500") then {
 		removeUniform player;
 	};
@@ -930,7 +935,11 @@ if (_unip != "") then {
 call d_fnc_save_respawngear;
 call d_fnc_save_layoutgear;
 
-0 spawn d_fnc_clean_craters;
+if (!isServer) then {
+	d_craters_array = [];
+	addMissionEventHandler ["EntityCreated", {if (typeOf _this == "#crater") then {d_craters_array pushBack _this}}];
+	0 spawn d_fnc_clean_craters;
+};
 
 private _vehicles = vehicles select {!(_x isKindOf "WeaponHolderSimulated")};
 
@@ -1113,7 +1122,7 @@ if (d_arsenal_mod == 0) then {
 		d_arsenal_mod_prestrings append ["PRACS_", "rhs_", "rhsgref_", "rhsusf_", "rhssaf_"];
 	};
 	if (d_spe) then {
-		d_arsenal_mod_prestrings append ["WW2_SPE_Assets_c_Weapons_InfantryWeapons_c", "WW2_SPE_Assets_c_Characters_Headgear_c", "WW2_SPE_Assets_c_Characters_Frenchs_c_FR_Late_Gear", "WW2_SPE_Assets_c_Characters_Civilians_c_French_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Rangers_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Army_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Airforce_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_Wehrmacht_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_TankTroops_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_Sturmtroopers_Gear", "ww2_spe_assets_c_weapons_misc_c_taskforceradioitems_compatibility", "WW2_SPE_Assets_c_Characters_Frenchs_c_FR_FFI_Gear","WW2_SPE_Assets_c_Weapons_Recoil_c", "WW2_SPE_Assets_c_Weapons_Sounds_c", "WW2_SPE_Assets_c_Weapons_Backpacks_c", "WW2_SPE_Assets_c_Weapons_Mines_c", "WW2_SPE_Assets_c_Vehicles_Weapons_c"];
+		d_arsenal_mod_prestrings append ["WW2_SPE_Assets_c_Weapons_InfantryWeapons_c", "WW2_SPE_Assets_c_Characters_Headgear_c", "WW2_SPE_Assets_c_Characters_Frenchs_c_FR_Late_Gear", "WW2_SPE_Assets_c_Characters_Civilians_c_French_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Rangers_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Army_Gear", "WW2_SPE_Assets_c_Characters_Americans_c_US_Airforce_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_Wehrmacht_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_TankTroops_Gear", "WW2_SPE_Assets_c_Characters_Germans_c_GER_Sturmtroopers_Gear", "ww2_spe_assets_c_weapons_misc_c_taskforceradioitems_compatibility", "WW2_SPE_Assets_c_Characters_Frenchs_c_FR_FFI_Gear","WW2_SPE_Assets_c_Weapons_Recoil_c", "WW2_SPE_Assets_c_Weapons_Sounds_c", "WW2_SPE_Assets_c_Weapons_Backpacks_c", "WW2_SPE_Assets_c_Weapons_Mines_c", "WW2_SPE_Assets_c_Vehicles_Weapons_c", "WW2_SPE_Assets_c_Characters_Frenchs_U1_c_FR_Milice_Gear", "WW2_SPE_Assets_c_Characters_Germans_U1_c_GER_FSJ_Gear", "WW2_SPE_Assets_c_Characters_Germans_U1_c_GER_Wehrmacht_Gear", "WW2_SPE_Assets_c_Characters_Germans_U1_c_GER_Sturmtroopers_Gear", "WW2_SPE_Assets_c_Characters_Americans_U1_c_US_Airborne_Gear", "WW2_SPE_Assets_c_Characters_Americans_U1_c_US_Army_Gear"];
 	};
 	if (d_jsdf) then {
 		d_arsenal_mod_prestrings append ["gac_", "JSDF_", "Sparky_", "rhsgref_", "rhsusf_"];

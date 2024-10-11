@@ -209,9 +209,9 @@ if (d_ao_check_for_ai in [0, 1]) then {
 			_wf allowDamage false;
 			_wf setDir (_wf getDir _trg_center);
 			_wf addEventHandler ["HandleDamage", {0}];
-			if (d_with_dynsim == 0) then {
+			/*if (d_with_dynsim == 0) then {
 				[_wf, 5] spawn d_fnc_enabledynsim;
-			};
+			};*/
 			sleep 0.3;
 			__TRACE_1("1111","_wf")
 
@@ -312,7 +312,7 @@ sleep 1;
 
 private _speedboatavailable = !isNil "d_sm_speedboat";
 if (!isNil "d_sm_speedboat") then {
-	_speedboatavailable = if (d_sm_speedboat isEqualType []) then {d_sm_speedboat isNotEqualTo []} else {d_sm_speedboat != ""};
+	_speedboatavailable = if (d_sm_speedboat isEqualType []) then {d_sm_speedboat isNotEqualTo []} else {d_sm_speedboat isNotEqualTo ""};
 	if (_speedboatavailable && {!d_preemptive_special_event}) then {
 		[_trg_center, _mtradius] spawn d_fnc_seapatrol;
 	};

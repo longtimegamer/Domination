@@ -42,7 +42,7 @@ if (isClass _cfg) then {
 		private _curpylon = _cfg select _i;
 		private _tweap = getText (configFile>>"CfgMagazines">>getText (_curpylon>>"attachment")>>"pylonWeapon");
 		__TRACE_1("","_tweap")
-		if (_tweap != "") then {
+		if (_tweap isNotEqualTo "") then {
 			_pylweaps pushBackUnique _tweap;
 		};
 	};
@@ -138,7 +138,9 @@ d_cas_metadata_enemy = [_plane, _planePos, _pos, _offset, _velocity, _vectorDir,
 //publicVariable "d_cas_metadata_enemy";
 
 // use eachframe for a smooth approach
-["dom_cas_setvelocitytransform_enemy", {call d_fnc_moduleCAS_eachframeAI}] call d_fnc_eachframeadd;
+["dom_cas_setvelocitytransform_enemy", {call d_fnc_moduleCAS_eachframeAI}, 0.1] call d_fnc_eachframeadd;
+
+params ["_name", "_code", ["_delta", 0], ["_type", "seconds"]];
 
 waitUntil {
 	private _fireProgress = _plane getVariable ["fireProgress", 0];
@@ -207,7 +209,7 @@ if !(isNull _logico) then {
 //--- Delete plane
 if (canMove _plane) then {
 	deleteVehicle _plane;
-	{deleteVehicle _x} forEach _crew;
+	deleteVehicle _crew;
 	deleteGroup _group;
 } else {
 	[_plane, _crew, _group] spawn {
@@ -215,7 +217,7 @@ if (canMove _plane) then {
 		params ["_plane", "_crew", "_group"];
 		sleep 30;
 		deleteVehicle _plane;
-		{deleteVehicle _x} forEach _crew;
+		deleteVehicle _crew;
 		deleteGroup _group;
 	};
 };
