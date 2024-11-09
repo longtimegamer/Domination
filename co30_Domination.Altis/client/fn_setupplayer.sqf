@@ -295,6 +295,11 @@ if (d_with_ranked || {d_database_found}) then {
 	};
 
 	inGameUISetEventHandler ["Action", "_this call d_fnc_healatmash; false"];
+} else {
+    player addEventHandler ["handleHeal", {
+        params ["_injured", "_healer", "_isMedic", "_atVehicle", "_action"];
+        _injured setDamage 0;
+    }];
 };
 
 if (d_disable_dom_weapon_mgmt != 1) then {
