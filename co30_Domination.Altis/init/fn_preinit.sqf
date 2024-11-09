@@ -3621,9 +3621,9 @@ if (hasInterface) then {
 
 #ifdef __OWN_SIDE_BLUFOR__
 	d_UAV_Small = call {
-		if (d_cup) exitWith {
-			"CUP_B_AH6X_USA"
-		};
+//		if (d_cup) exitWith {
+//			"CUP_B_AH6X_USA"
+//		};
 		"B_UAV_01_F";
 	};
 	
