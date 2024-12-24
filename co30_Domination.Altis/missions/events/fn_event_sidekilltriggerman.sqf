@@ -196,7 +196,7 @@ d_mt_event_messages_array deleteAt (d_mt_event_messages_array find _eventDescrip
 publicVariable "d_mt_event_messages_array";
 
 if (d_ai_persistent_corpses == 0) then {
-	waitUntil {sleep 10; d_mt_done};
+	waitUntil {sleep 1; d_mt_done};
 } else {
 	sleep 120;
 };

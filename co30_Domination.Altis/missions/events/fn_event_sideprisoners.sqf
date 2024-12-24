@@ -164,8 +164,10 @@ while {sleep 3.14; !d_mt_done; !_is_rescued} do {
 };
 
 if (_all_dead) then {
+    diag_log [format ["all dead for event: %1", _mt_event_key]];
 	d_kb_logic1 kbTell [d_kb_logic2,d_kb_topic_side,"MTEventSidePrisonersFail",d_kbtel_chan];
 } else {
+    diag_log [format ["succeeded for event: %1", _mt_event_key]];
 	d_kb_logic1 kbTell [d_kb_logic2,d_kb_topic_side,"MTEventSidePrisonersSucceed",d_kbtel_chan];
 	d_kb_logic1 kbTell [d_kb_logic2,d_kb_topic_side,"MTEventDetonateSuccess",d_kbtel_chan];
 	d_kb_logic1 kbTell [
@@ -187,7 +189,7 @@ deleteVehicle _trigger;
 deleteMarker _marker;
 
 if (d_ai_persistent_corpses == 0) then {
-	waitUntil {sleep 10; d_mt_done};
+	waitUntil {sleep 1; d_mt_done};
 } else {
 	sleep 120;
 };

@@ -188,7 +188,7 @@ deleteVehicle _trigger;
 deleteMarker _marker;
 
 if (d_ai_persistent_corpses == 0) then {
-	waitUntil {sleep 10; d_mt_done};
+	waitUntil {sleep 1; d_mt_done};
 } else {
 	sleep 120;
 };
