@@ -1,4 +1,5 @@
 //#define __DEBUG__
+//#define __GROUPDEBUG__
 #include "..\x_setup.sqf"
 
 // Infantry Occupy House
@@ -248,6 +249,13 @@ __TRACE("start of forEach _buildingPosArray")
 				//diag_log [ format ["there are %1 buildings in the array, selecting the first element", count _bldgs_list]];
 				_theBuilding = _bldgs_list select 0;
 			};
+
+#ifdef __GROUPDEBUG__
+    private _bldg_string_tmp = format ["bldg-%1-%2", getModelInfo _theBuilding # 0, str (random 99999)]; // useful for identifying bad buildings to add to the civ blacklist
+    [_bldg_string_tmp, position _theBuilding, "ICON", "ColorBlack", [0.5, 0.5], _bldg_string_tmp, 0, "mil_dot"] call d_fnc_CreateMarkerLocal;
+#endif
+
+
 		};
 		// NOTE - next part has problems, disabling for now
 		//if (!_skip_position && {_isRequireRoofOverhead && {!((_housePosBeforeEyeHeight) call d_fnc_iscoveredposition)}}) then {
