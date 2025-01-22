@@ -2908,7 +2908,6 @@ if (d_with_airdrop == 2) then {
 	
 	d_chem_objs_ar = [];
 
-	if (d_enable_civs == 1) then {
 		//
 		//civilian vehicles
 		//
@@ -2986,7 +2985,6 @@ if (d_with_airdrop == 2) then {
 			"CFP_B_afgpolice_offroad_01", 0.25,
 			"CFP_B_uaz_01", 1
 		];
-	};
 
 	private _civVehiclesWeightedRuralLivonia = [
 		"C_Offroad_01_F", 0.30,
