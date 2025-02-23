@@ -464,7 +464,7 @@ if (!d_mt_radio_down) then {
 		[d_c_attacking_grps] spawn d_fnc_handleattackgroups;
 	} else {
 		d_c_attacking_grps = [];
-		d_create_new_paras = true;
+		//d_create_new_paras = true; // runs too often
 	};
 };
 
