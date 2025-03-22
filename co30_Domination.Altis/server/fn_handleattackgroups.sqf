@@ -10,7 +10,7 @@ private _allunits = [];
 
 if (_allunits isEqualTo []) exitWith {
 	d_c_attacking_grps = [];
-	d_create_new_paras = true; // should not run often, only if _allUnits is empty array
+	//d_create_new_paras = true; // should not run often, only if _allUnits is empty array
 };
 
 sleep 1.2123;
@@ -23,7 +23,7 @@ while {!d_mt_radio_down} do {
 			sleep 1;
 		};
 		if (!d_mt_radio_down) then {
-			d_create_new_paras = true; // the should not run often, only if less than 4 units in _allUnits
+			//d_create_new_paras = true; // the should not run often, only if less than 4 units in _allUnits
 		};
 	};
 	sleep 5;
