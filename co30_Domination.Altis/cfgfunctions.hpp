@@ -706,6 +706,11 @@ class cfgFunctions {
 			addc(acurator);
 			addc(entityrespawned);
 			addc(dynsimcheck);
+			addc(addbarrelsfun);
+			addc(bfunexp);
+			addc(airagdoll);
+			addc(airddo);
+			addc(vfireflares);
 		};
 		class Dom_PrePostInit {
 			file = "init";
