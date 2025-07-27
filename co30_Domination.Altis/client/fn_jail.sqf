@@ -27,9 +27,15 @@ if (player getVariable "xr_pluncon") then {
 	d_uncon_finally_over = false;
 };
 
-cutText [localize "STR_DOM_MISSIONSTRING_1999", "BLACK", 0];
-
 player allowDamage false;
+
+(findDisplay 160) closeDisplay 1;
+if (!isNull getConnectedUAV player) then {
+	getConnectedUAV player action ["UAVTerminalReleaseConnection", player];
+	player connectTerminalToUAV objNull;
+};
+
+cutText [localize "STR_DOM_MISSIONSTRING_1999", "BLACK", 0];
 
 if (vehicle player != player) then {
 	moveOut player;
